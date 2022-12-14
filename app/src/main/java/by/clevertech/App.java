@@ -3,16 +3,9 @@
  */
 package by.clevertech;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.jdbc.core.JdbcTemplate;
-
-import by.clevertech.dao.entity.DiscountCard;
-import by.clevertech.dao.repository.CardRepository;
-import by.clevertech.dao.repository.impl.CardRepositoryImpl;
-
 public class App {
 
 	public static void main(String[] args) {
-		
+
 	}
 }

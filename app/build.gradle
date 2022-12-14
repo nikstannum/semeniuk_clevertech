@@ -30,13 +30,6 @@ dependencies {
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
 	
 	implementation 'org.postgresql:postgresql:42.4.1'
-	
-	implementation 'org.springframework:spring-context:5.3.22'
-	
-	implementation 'org.springframework:spring-jdbc:5.3.22'
-	
-	implementation 'com.zaxxer:HikariCP:5.0.1'
-	
 }
 
 application {
