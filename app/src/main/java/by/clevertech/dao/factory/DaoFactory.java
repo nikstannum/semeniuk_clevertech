@@ -19,8 +19,9 @@ public class DaoFactory {
 
 	private DaoFactory() {
 		map = new HashMap<>();
-		map.put(ProductRepository.class, new ProductRepositoryImpl());
-		map.put(CardRepository.class, new CardRepositoryImpl(new JdbcTemplate(new HikariDataSource())));
+		
+//		map.put(ProductRepository.class, new ProductRepositoryImpl());
+//		map.put(CardRepository.class, new CardRepositoryImpl(new JdbcTemplate(new HikariDataSource())));
 	}
 
 	public <T> T getDao(Class<T> clazz) {

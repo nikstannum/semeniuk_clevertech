@@ -13,11 +13,6 @@ import by.clevertech.dao.repository.impl.CardRepositoryImpl;
 public class App {
 
 	public static void main(String[] args) {
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ContextConfig.class);
-		JdbcTemplate template = context.getBean(JdbcTemplate.class);
-		CardRepository repository = new CardRepositoryImpl(template);
-
-		DiscountCard card = repository.findById(1L);
-		System.out.println(card);
+		
 	}
 }
