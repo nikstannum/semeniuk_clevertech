@@ -3,6 +3,10 @@ package by.clevertech.dao.factory;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import com.zaxxer.hikari.HikariDataSource;
+
 import by.clevertech.dao.repository.CardRepository;
 import by.clevertech.dao.repository.CrudRepository;
 import by.clevertech.dao.repository.ProductRepository;
@@ -16,7 +20,7 @@ public class DaoFactory {
 	private DaoFactory() {
 		map = new HashMap<>();
 		map.put(ProductRepository.class, new ProductRepositoryImpl());
-		map.put(CardRepository.class, new CardRepositoryImpl());
+		map.put(CardRepository.class, new CardRepositoryImpl(new JdbcTemplate(new HikariDataSource())));
 	}
 
 	public <T> T getDao(Class<T> clazz) {
