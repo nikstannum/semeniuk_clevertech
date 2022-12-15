@@ -1,87 +1,109 @@
 package by.clevertech.dao.repository.impl;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
-
+import by.clevertech.dao.connection.DataSource;
 import by.clevertech.dao.entity.Product;
 import by.clevertech.dao.repository.ProductRepository;
+import by.clevertech.exception.AccessException;
 import by.clevertech.exception.EntityCreateException;
-import by.clevertech.exception.EntityDeleteException;
-import by.clevertech.exception.EntityUpdateException;
+import by.clevertech.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class ProductRepositoryImpl implements ProductRepository {
-	private static final String INSERT = "INSERT into ptoducts (name, price, discount) VALUES (:name, :price, :discount)";
-	private static final String FIND_BY_ID = "SELECT p.product_id, p.name, p.price, p.discount FROM products p WHERE product_id=:id";
+	private static final String INSERT = "INSERT into ptoducts (name, price, discount) VALUES (?, ?, ?)";
+	private static final String FIND_BY_ID = "SELECT p.product_id, p.name, p.price, p.discount FROM products p WHERE product_id = ?";
 	private static final String FIND_ALL = "SELECT p.product_id, p.name, p.price, p.discount FROM products p";
-	private static final String UPDATE = "UPDATE ptoducts SET name = :name, price = :price, discount = :discount WHERE product_id = :id";
-	private static final String DELETE = "DELETE FROM products WHERE product_id = :id";
+	private static final String UPDATE = "UPDATE ptoducts SET name = ?, price = ?, discount = ? WHERE product_id = ?";
+	private static final String DELETE = "DELETE FROM products WHERE product_id = ?";
 
-	private final NamedParameterJdbcTemplate template;
+	private final DataSource dataSource;
 
 	@Override
 	public Product create(Product entity) {
-		KeyHolder keyHolder = new GeneratedKeyHolder();
-		MapSqlParameterSource params = new MapSqlParameterSource();
-		params.addValue("name", entity.getName());
-		params.addValue("price", entity.getPrice());
-		params.addValue("discount", entity.isDiscount());
-		template.update(INSERT, params, keyHolder);
-		Number key = keyHolder.getKey();
-		if (key == null) {
-			throw new EntityCreateException("couldn't create new product");
+		try (Connection connection = dataSource.getFreeConnections();
+						PreparedStatement statement = connection.prepareStatement(INSERT,
+										Statement.RETURN_GENERATED_KEYS)) {
+			statement.setString(1, entity.getName());
+			statement.setBigDecimal(2, entity.getPrice());
+			statement.setBoolean(3, entity.isDiscount());
+			statement.executeUpdate();
+			ResultSet keys = statement.getGeneratedKeys();
+			if (keys.next()) {
+				long id = keys.getLong("product_id");
+				return findById(id);
+			}
+		} catch (SQLException e) {
+			throw new AccessException(e.getMessage(), e.getCause());
 		}
-		Long id = key.longValue();
-		return findById(id);
+		throw new EntityCreateException("couldn't create new product");
 	}
 
 	@Override
 	public Product findById(Long id) {
-		Map<String, Object> params = new HashMap<>();
-		params.put("id", id);
-		return template.queryForObject(FIND_BY_ID, params, this::mapRow);
+		try (Connection connection = dataSource.getFreeConnections();
+						PreparedStatement statement = connection.prepareStatement(FIND_BY_ID)) {
+			statement.setLong(1, id);
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet.next()) {
+				return processProduct(resultSet);
+			}
+		} catch (SQLException e) {
+			throw new AccessException(e.getMessage(), e.getCause());
+		}
+		throw new EntityNotFoundException("product with id = " + id + " wasn't found");
 	}
 
 	@Override
 	public List<Product> findAll() {
-		return template.query(FIND_ALL, this::mapRow);
+		List<Product> list = new ArrayList<>();
+		try (Connection connection = dataSource.getFreeConnections();
+						Statement statement = connection.createStatement()) {
+			ResultSet resultSet = statement.executeQuery(FIND_ALL);
+			while (resultSet.next()) {
+				list.add(processProduct(resultSet));
+			}
+			return list;
+		} catch (SQLException e) {
+			throw new AccessException(e.getMessage(), e.getCause());
+		}
 	}
 
 	@Override
 	public Product update(Product entity) {
-		MapSqlParameterSource params = new MapSqlParameterSource();
-		params.addValue("name", entity.getName());
-		params.addValue("price", entity.getPrice());
-		params.addValue("discount", entity.isDiscount());
-		params.addValue("id", entity.getId());
-		int rowUpdated = template.update(UPDATE, params);
-		if (rowUpdated == 0) {
-			throw new EntityUpdateException("couldn't update product with id = " + entity.getId());
+		try (Connection connection = dataSource.getFreeConnections();
+						PreparedStatement statement = connection.prepareStatement(UPDATE)) {
+			statement.setString(1, entity.getName());
+			statement.setBigDecimal(2, entity.getPrice());
+			statement.setBoolean(3, entity.isDiscount());
+			statement.setLong(4, entity.getId());
+			statement.executeUpdate();
+			return findById(entity.getId());
+		} catch (SQLException e) {
+			throw new AccessException(e.getMessage(), e.getCause());
 		}
-		return findById(entity.getId());
 	}
 
 	@Override
 	public boolean delete(Long id) {
-		Map<String, Object> params = new HashMap<>();
-		params.put("id", id);
-		int rowUpdated = template.update(DELETE, params);
-		if (rowUpdated == 0) {
-			throw new EntityDeleteException("couldn't delete product with id = " + id);
+		try (Connection connection = dataSource.getFreeConnections();
+						PreparedStatement statement = connection.prepareStatement(DELETE)) {
+			statement.setLong(1, id);
+			int rowsDelete = statement.executeUpdate();
+			return rowsDelete == 1;
+		} catch (SQLException e) {
+			throw new AccessException(e.getMessage(), e.getCause());
 		}
-		return true;
 	}
 
-	private Product mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+	private Product processProduct(ResultSet resultSet) throws SQLException {
 		Product product = new Product();
 		product.setId(resultSet.getLong("product_id"));
 		product.setName(resultSet.getString("name"));
