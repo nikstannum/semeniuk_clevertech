@@ -23,9 +23,23 @@ public class CheckServiceImpl implements CheckService {
 
 	@Override
 	public Check get(CheckInputDto checkInputDto) {
+		Check check = new Check();
+		List<CheckItem> list = getCheckItems(checkInputDto);
+		check.setProducts(list);
+		// FIXME setTotalCost with and without discount to check
+		Long cardId = checkInputDto
+						.getCardId(); /*
+										 * TODO 1) finalCost (if cardId != null).
+										 * 2) Processing EntNotFoundExc: if the card 
+										 * is not found, then the application should not crash
+										 */
+		BigDecimal costWithotDiscout = totalCostWithoutDiscount(list);
+		BigDecimal costWithDiscountProducts = costWithDiscountProducts(list);
+		BigDecimal totalCost = totalCostWithDiscountCard(costWithDiscountProducts, checkInputDto.getCardId());
+		BigDecimal finalCost;
 
-		// TODO Auto-generated method stub
-		return null;
+		check.setTotalCost(costWithDiscountProducts);
+		return check;
 	}
 
 	private List<CheckItem> getCheckItems(CheckInputDto checkInputDto) {
@@ -41,24 +55,21 @@ public class CheckServiceImpl implements CheckService {
 			item.setTotal(total);
 			items.add(item);
 		}
-		BigDecimal costWithotDiscout = totalCostWithoutDiscount(items);
-		BigDecimal costWithDiscountProducts = costWithDiscountProducts(items);
-		BigDecimal totalCost = totalCostWithDiscountCard(costWithDiscountProducts, checkInputDto.getCardId());
-
-		// FIXME setTotalCost to items
 		return items;
 	}
 
 	private BigDecimal totalCostWithoutDiscount(List<CheckItem> items) {
 		BigDecimal totalCostWithoutDiscount = BigDecimal.ZERO;
 		for (CheckItem item : items) {
-			totalCostWithoutDiscount.add(item.getTotal().multiply(BigDecimal.valueOf(item.getQuantity())));
+			totalCostWithoutDiscount = totalCostWithoutDiscount.add(item.getTotal());
 		}
 		return totalCostWithoutDiscount;
 	}
 
 	private BigDecimal costDicsountItem(CheckItem item) {
-		BigDecimal cost = item.getTotal().multiply(BigDecimal.valueOf(0.1)); // FIXME Magic number
+		BigDecimal discountForDiscountProduct = BigDecimal.valueOf(10); // FIXME Magic number (discount size = 10%)
+		BigDecimal discountFactor = BigDecimal.valueOf(100).subtract(discountForDiscountProduct);
+		BigDecimal cost = item.getTotal().multiply(discountFactor).divide(BigDecimal.valueOf(100));
 		return cost;
 	}
 
@@ -68,9 +79,9 @@ public class CheckServiceImpl implements CheckService {
 			Integer quantity = item.getQuantity();
 			Product product = item.getProduct();
 			if (quantity > 5 && product.isDiscount()) {
-				totalCost.add(costDicsountItem(item));
+				totalCost = totalCost.add(costDicsountItem(item));
 			} else {
-				totalCost.add(item.getTotal());
+				totalCost = totalCost.add(item.getTotal());
 			}
 		}
 		return totalCost;

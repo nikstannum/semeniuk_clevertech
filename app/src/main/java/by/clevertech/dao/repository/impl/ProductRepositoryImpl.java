@@ -49,14 +49,16 @@ public class ProductRepositoryImpl implements ProductRepository {
 	@Override
 	public Product findById(Long id) {
 		try (Connection connection = dataSource.getFreeConnections();
-						PreparedStatement statement = connection.prepareStatement(FIND_BY_ID)) {
+						) {
+			PreparedStatement statement = connection.prepareStatement(FIND_BY_ID);
 			statement.setLong(1, id);
 			ResultSet resultSet = statement.executeQuery();
 			if (resultSet.next()) {
 				return processProduct(resultSet);
 			}
 		} catch (SQLException e) {
-			throw new AccessException(e.getMessage(), e.getCause());
+			e.printStackTrace();
+//			throw new AccessException(e.getMessage(), e.getCause());
 		}
 		throw new EntityNotFoundException("product with id = " + id + " wasn't found");
 	}

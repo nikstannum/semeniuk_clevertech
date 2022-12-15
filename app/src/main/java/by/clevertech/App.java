@@ -3,9 +3,27 @@
  */
 package by.clevertech;
 
+import java.math.BigDecimal;
+import java.util.List;
+
+import by.clevertech.dao.entity.Check;
+import by.clevertech.dao.entity.CheckItem;
+import by.clevertech.io.MyFileReader;
+import by.clevertech.service.CheckService;
+import by.clevertech.service.dto.CheckInputDto;
+import by.clevertech.service.factory.ServiceFactory;
+
 public class App {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
+		MyFileReader reader = new MyFileReader();
+		CheckInputDto dto = reader.getCheckInputDto();
+		CheckService service = ServiceFactory.INSTANCE.getService(CheckService.class);
+		Check rawCheck = service.get(dto);
+		List<CheckItem> list = rawCheck.getProducts();
+		BigDecimal cost = rawCheck.getTotalCost();
+		System.out.println(list);
+		System.out.println(cost);
 
 	}
 }
