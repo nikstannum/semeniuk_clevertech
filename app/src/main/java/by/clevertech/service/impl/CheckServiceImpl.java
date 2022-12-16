@@ -27,18 +27,19 @@ public class CheckServiceImpl implements CheckService {
 		List<CheckItem> list = getCheckItems(checkInputDto);
 		check.setProducts(list);
 		// FIXME setTotalCost with and without discount to check
-		Long cardId = checkInputDto
-						.getCardId(); /*
-										 * TODO 1) finalCost (if cardId != null).
-										 * 2) Processing EntNotFoundExc: if the card 
-										 * is not found, then the application should not crash
-										 */
-		BigDecimal costWithotDiscout = totalCostWithoutDiscount(list);
-		BigDecimal costWithDiscountProducts = costWithDiscountProducts(list);
-		BigDecimal totalCost = totalCostWithDiscountCard(costWithDiscountProducts, checkInputDto.getCardId());
-		BigDecimal finalCost;
-
-		check.setTotalCost(costWithDiscountProducts);
+		Long cardId = checkInputDto.getCardId();
+		/*
+		 * TODO Processing EntNotFoundExc: if the card is not found, then the
+		 * application should not crash
+		 */
+		BigDecimal costWithoutDiscounts = totalCostWithoutDiscounts(list);
+		BigDecimal costWithoutCard = totalCostWithoutCard(list);
+		if (cardId != null) {
+			BigDecimal costWithCard = totalCostWithCard(costWithoutCard, cardId);
+			check.setTotalCost(costWithCard);
+			return check;
+		}
+		check.setTotalCost(costWithoutCard);
 		return check;
 	}
 
@@ -58,22 +59,22 @@ public class CheckServiceImpl implements CheckService {
 		return items;
 	}
 
-	private BigDecimal totalCostWithoutDiscount(List<CheckItem> items) {
+	private BigDecimal totalCostWithoutDiscounts(List<CheckItem> items) {
 		BigDecimal totalCostWithoutDiscount = BigDecimal.ZERO;
 		for (CheckItem item : items) {
 			totalCostWithoutDiscount = totalCostWithoutDiscount.add(item.getTotal());
 		}
-		return totalCostWithoutDiscount;
+		return totalCostWithoutDiscount.setScale(2, RoundingMode.HALF_UP);
 	}
 
 	private BigDecimal costDicsountItem(CheckItem item) {
 		BigDecimal discountForDiscountProduct = BigDecimal.valueOf(10); // FIXME Magic number (discount size = 10%)
 		BigDecimal discountFactor = BigDecimal.valueOf(100).subtract(discountForDiscountProduct);
 		BigDecimal cost = item.getTotal().multiply(discountFactor).divide(BigDecimal.valueOf(100));
-		return cost;
+		return cost.setScale(2, RoundingMode.HALF_UP);
 	}
 
-	private BigDecimal costWithDiscountProducts(List<CheckItem> items) {
+	private BigDecimal totalCostWithoutCard(List<CheckItem> items) {
 		BigDecimal totalCost = BigDecimal.ZERO;
 		for (CheckItem item : items) {
 			Integer quantity = item.getQuantity();
@@ -84,20 +85,18 @@ public class CheckServiceImpl implements CheckService {
 				totalCost = totalCost.add(item.getTotal());
 			}
 		}
-		return totalCost;
+		return totalCost.setScale(2, RoundingMode.HALF_UP);
 	}
 
-	private BigDecimal totalCostWithDiscountCard(BigDecimal cost, Long cardId) {
+	private BigDecimal totalCostWithCard(BigDecimal cost, Long cardId) {
 		BigDecimal totalCost = cost;
 		DiscountCard card = cardRepository.findById(cardId);
-		if (card != null) {
+		if (card != null) { // FIXME how will to processing better?
 			BigDecimal discountSize = card.getDiscountSize();
-			totalCost = totalCost.multiply(discountSize).divide(BigDecimal.valueOf(100)).setScale(2,
-							RoundingMode.HALF_EVEN);
-		} else {
-			totalCost.setScale(2, RoundingMode.HALF_EVEN);
+			BigDecimal discountFactor = BigDecimal.valueOf(100).subtract(discountSize);
+			totalCost = totalCost.multiply(discountFactor).divide(BigDecimal.valueOf(100));
 		}
-		return totalCost;
+		return totalCost.setScale(2, RoundingMode.HALF_UP);
 	}
 
 	@Override

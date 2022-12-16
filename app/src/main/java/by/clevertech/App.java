@@ -8,6 +8,7 @@ import java.util.List;
 
 import by.clevertech.dao.entity.Check;
 import by.clevertech.dao.entity.CheckItem;
+import by.clevertech.io.CliReader;
 import by.clevertech.io.MyFileReader;
 import by.clevertech.service.CheckService;
 import by.clevertech.service.dto.CheckInputDto;
@@ -16,8 +17,12 @@ import by.clevertech.service.factory.ServiceFactory;
 public class App {
 
 	public static void main(String[] args) throws Exception {
-		MyFileReader reader = new MyFileReader();
-		CheckInputDto dto = reader.getCheckInputDto();
+//		MyFileReader reader = new MyFileReader();
+//		CheckInputDto dto = reader.getCheckInputDto();
+
+		CliReader reader = new CliReader();
+		CheckInputDto dto = reader.read(args);
+
 		CheckService service = ServiceFactory.INSTANCE.getService(CheckService.class);
 		Check rawCheck = service.get(dto);
 		List<CheckItem> list = rawCheck.getProducts();

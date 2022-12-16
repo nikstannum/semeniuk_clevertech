@@ -13,7 +13,6 @@ import by.clevertech.dao.entity.DiscountCard;
 import by.clevertech.dao.repository.CardRepository;
 import by.clevertech.exception.AccessException;
 import by.clevertech.exception.EntityCreateException;
-import by.clevertech.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -56,7 +55,13 @@ public class CardRepositoryImpl implements CardRepository {
 		} catch (SQLException e) {
 			throw new AccessException(e.getMessage(), e.getCause());
 		}
-		throw new EntityNotFoundException("card with id = " + id + " wasn't found");
+		return null;
+		/*
+		 * FIXME or better throw new EntityNotFoundException("card with id = " + id +
+		 * " wasn't found"); then the exception handling should be in the service method
+		 * public Check get(CheckInputDto checkInputDto) 
+		 * 
+		 */
 	}
 
 	@Override
