@@ -1,4 +1,4 @@
-package by.clevertech.dao.entity;
+package by.clevertech.data.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

@@ -3,9 +3,9 @@ package by.clevertech.service.factory;
 import java.util.HashMap;
 import java.util.Map;
 
-import by.clevertech.dao.factory.DaoFactory;
-import by.clevertech.dao.repository.CardRepository;
-import by.clevertech.dao.repository.ProductRepository;
+import by.clevertech.data.factory.DaoFactory;
+import by.clevertech.data.repository.CardRepository;
+import by.clevertech.data.repository.ProductRepository;
 import by.clevertech.service.CheckService;
 import by.clevertech.service.CrudService;
 import by.clevertech.service.impl.CheckServiceImpl;

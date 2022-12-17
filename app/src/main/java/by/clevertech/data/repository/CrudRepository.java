@@ -1,4 +1,4 @@
-package by.clevertech.dao.repository;
+package by.clevertech.data.repository;
 
 import java.util.List;
 

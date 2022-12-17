@@ -1,6 +1,6 @@
 package by.clevertech.service;
 
-import by.clevertech.dao.entity.Product;
+import by.clevertech.data.entity.Product;
 import by.clevertech.service.dto.ProductDto;
 
 public class Mapper {

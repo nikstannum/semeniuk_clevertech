@@ -10,14 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import by.clevertech.dao.entity.Check;
-import by.clevertech.dao.entity.CheckItem;
-import by.clevertech.dao.entity.DiscountCard;
-import by.clevertech.dao.entity.Product;
-import by.clevertech.dao.repository.CardRepository;
-import by.clevertech.dao.repository.ProductRepository;
+import by.clevertech.data.entity.Check;
+import by.clevertech.data.entity.CheckItem;
+import by.clevertech.data.entity.DiscountCard;
+import by.clevertech.data.entity.Product;
+import by.clevertech.data.repository.CardRepository;
+import by.clevertech.data.repository.ProductRepository;
 import by.clevertech.service.CheckService;
-import by.clevertech.service.dto.CheckInputDto;
+import by.clevertech.service.dto.CheckInDto;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -26,7 +26,7 @@ public class CheckServiceImpl implements CheckService {
 	private final CardRepository cardRepository;
 
 	@Override
-	public Check get(CheckInputDto checkInputDto) {
+	public Check get(CheckInDto checkInputDto) {
 		Check check = new Check();
 		List<CheckItem> list = getCheckItems(checkInputDto);
 		check.setProducts(list);
@@ -65,7 +65,7 @@ public class CheckServiceImpl implements CheckService {
 		return check;
 	}
 
-	private List<CheckItem> getCheckItems(CheckInputDto checkInputDto) {
+	private List<CheckItem> getCheckItems(CheckInDto checkInputDto) {
 		List<CheckItem> items = new ArrayList<>();
 		Map<Long, Integer> products = checkInputDto.getProducts();
 		for (Long productId : products.keySet()) {

@@ -4,19 +4,19 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
-import by.clevertech.dao.connection.ConfigManager;
-import by.clevertech.service.dto.CheckInputDto;
+import by.clevertech.data.connection.ConfigManager;
+import by.clevertech.service.dto.CheckInDto;
 
 public class MyFileReader {
 
-	public CheckInputDto getCheckInputDto() {
+	public CheckInDto getCheckInputDto() {
 		return readFile();
 	}
 
-	private CheckInputDto readFile() {
+	private CheckInDto readFile() {
 		ConfigManager props = ConfigManager.INSTANCE;
 		String path = props.getProperty("input.file");
 		File file = new File(path);
@@ -29,14 +29,14 @@ public class MyFileReader {
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
-		CheckInputDto dto = processContent(content);
+		CheckInDto dto = processContent(content);
 		return dto;
 	}
 
-	private CheckInputDto processContent(String str) {
-		CheckInputDto dto = new CheckInputDto();
+	private CheckInDto processContent(String str) {
+		CheckInDto dto = new CheckInDto();
 		String[] arr = str.split(" ");
-		Map<Long, Integer> map = new LinkedHashMap<>();
+		Map<Long, Integer> map = new HashMap<>();
 		Long cardId = null;
 		for (int i = 0; i < arr.length; i++) {
 			if (arr[i].contains("card")) {

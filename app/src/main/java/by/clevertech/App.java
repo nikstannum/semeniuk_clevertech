@@ -12,11 +12,11 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import by.clevertech.dao.entity.Check;
-import by.clevertech.dao.entity.CheckItem;
+import by.clevertech.data.entity.Check;
+import by.clevertech.data.entity.CheckItem;
 import by.clevertech.io.MyFileReader;
 import by.clevertech.service.CheckService;
-import by.clevertech.service.dto.CheckInputDto;
+import by.clevertech.service.dto.CheckInDto;
 import by.clevertech.service.factory.ServiceFactory;
 
 public class App {
@@ -76,7 +76,7 @@ public class App {
 						.append(cashierAndDate).append(timeStr).append(horizonLine).append(tableHead);
 
 		MyFileReader reader = new MyFileReader();
-		CheckInputDto dto = reader.getCheckInputDto();
+		CheckInDto dto = reader.getCheckInputDto();
 		CheckService service = ServiceFactory.INSTANCE.getService(CheckService.class);
 		Check rawCheck = service.get(dto);
 		List<CheckItem> list = rawCheck.getProducts();

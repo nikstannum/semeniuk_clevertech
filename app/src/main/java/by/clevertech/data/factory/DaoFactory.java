@@ -1,14 +1,14 @@
-package by.clevertech.dao.factory;
+package by.clevertech.data.factory;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import by.clevertech.dao.connection.DataSource;
-import by.clevertech.dao.repository.CardRepository;
-import by.clevertech.dao.repository.CrudRepository;
-import by.clevertech.dao.repository.ProductRepository;
-import by.clevertech.dao.repository.impl.CardRepositoryImpl;
-import by.clevertech.dao.repository.impl.ProductRepositoryImpl;
+import by.clevertech.data.connection.DataSource;
+import by.clevertech.data.repository.CardRepository;
+import by.clevertech.data.repository.CrudRepository;
+import by.clevertech.data.repository.ProductRepository;
+import by.clevertech.data.repository.impl.CardRepositoryImpl;
+import by.clevertech.data.repository.impl.ProductRepositoryImpl;
 
 public class DaoFactory {
 	public static final DaoFactory INSTANCE = new DaoFactory();

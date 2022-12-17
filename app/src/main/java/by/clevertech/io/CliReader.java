@@ -1,15 +1,15 @@
 package by.clevertech.io;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
-import by.clevertech.service.dto.CheckInputDto;
+import by.clevertech.service.dto.CheckInDto;
 
 public class CliReader {
 
-	public CheckInputDto read(String[] args) {
-		CheckInputDto dto = new CheckInputDto();
-		Map<Long, Integer> map = new LinkedHashMap<>();
+	public CheckInDto read(String[] args) {
+		CheckInDto dto = new CheckInDto();
+		Map<Long, Integer> map = new HashMap<>();
 		Long cardId = null;
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].contains("card")) {

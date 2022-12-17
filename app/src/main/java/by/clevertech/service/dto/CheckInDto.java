@@ -5,7 +5,7 @@ import java.util.Map;
 import lombok.Data;
 
 @Data
-public class CheckInputDto {
+public class CheckInDto {
 	private Map<Long, Integer> products;
 	private Long cardId;
 }

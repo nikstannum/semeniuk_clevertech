@@ -9,8 +9,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import by.clevertech.dao.entity.Check;
-import by.clevertech.dao.entity.CheckItem;
+import by.clevertech.data.entity.Check;
+import by.clevertech.data.entity.CheckItem;
 
 public class ConsoleWriter implements PrintCheck {
 

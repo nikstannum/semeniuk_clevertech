@@ -1,6 +1,6 @@
 package by.clevertech.io;
 
-import by.clevertech.dao.entity.Check;
+import by.clevertech.data.entity.Check;
 
 public interface PrintCheck {
 
