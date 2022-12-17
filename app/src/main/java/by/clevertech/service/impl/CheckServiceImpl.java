@@ -2,6 +2,10 @@ package by.clevertech.service.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +30,9 @@ public class CheckServiceImpl implements CheckService {
 		Check check = new Check();
 		List<CheckItem> list = getCheckItems(checkInputDto);
 		check.setProducts(list);
-		// FIXME setTotalCost with and without discount to check
+		/*
+		 * FIXME setTotalCost with and without discount to check setHeader
+		 */
 		Long cardId = checkInputDto.getCardId();
 		/*
 		 * TODO Processing EntNotFoundExc: if the card is not found, then the
@@ -40,6 +46,22 @@ public class CheckServiceImpl implements CheckService {
 			return check;
 		}
 		check.setTotalCost(costWithoutCard);
+		check.setTimestamp(LocalDateTime.now());
+
+		String cashReceipt = "CASH RECEIPT";
+		String storeNumber = "SUPERMARKET 123";
+		String address = "12, MILKYWAY Galaxy/ Earth";
+		String tel = "Tel: 123-456-7890";
+		String cashier = "CASHIER: Marpha Vasilevna";
+		
+		LocalDateTime dateTime = LocalDateTime.now();
+		LocalDate date = dateTime.toLocalDate();
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		String formattedDate = date.format(dateFormat);
+		LocalTime time = dateTime.toLocalTime();
+		DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
+		String formattedTime = time.format(timeFormat);
+
 		return check;
 	}
 
