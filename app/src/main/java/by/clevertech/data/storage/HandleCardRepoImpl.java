@@ -73,5 +73,4 @@ public class HandleCardRepoImpl implements CardRepository {
     public boolean delete(Long id) {
         return repo.remove(id) != null;
     }
-
 }

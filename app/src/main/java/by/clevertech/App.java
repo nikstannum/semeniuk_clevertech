@@ -10,7 +10,9 @@ import by.clevertech.service.CheckService;
 import by.clevertech.service.dto.CheckInDto;
 import by.clevertech.service.dto.CheckOutDto;
 import by.clevertech.service.factory.ServiceFactory;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class App {
 
     public static void main(String[] args) throws Exception {
