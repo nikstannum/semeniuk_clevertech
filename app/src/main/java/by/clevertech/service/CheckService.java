@@ -1,8 +1,8 @@
 package by.clevertech.service;
 
-import by.clevertech.data.entity.Check;
 import by.clevertech.service.dto.CheckInDto;
+import by.clevertech.service.dto.CheckOutDto;
 
-public interface CheckService extends CrudService<Check, Long> {
-	public Check get(CheckInDto checkInputDto);
+public interface CheckService {
+    public CheckOutDto get(CheckInDto checkInputDto);
 }

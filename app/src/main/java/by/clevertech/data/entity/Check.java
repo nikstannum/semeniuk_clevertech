@@ -13,4 +13,5 @@ public class Check {
 	private LocalDateTime timestamp;
 	private List<CheckItem> products;
 	private BigDecimal totalCost;
+	private BigDecimal fullCost;
 }

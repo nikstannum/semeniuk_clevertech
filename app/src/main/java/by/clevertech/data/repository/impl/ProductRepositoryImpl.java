@@ -1,6 +1,5 @@
 package by.clevertech.data.repository.impl;
 
-import java.rmi.AccessException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

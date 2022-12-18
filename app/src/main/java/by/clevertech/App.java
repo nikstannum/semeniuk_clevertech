@@ -3,93 +3,27 @@
  */
 package by.clevertech;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
-import by.clevertech.data.entity.Check;
-import by.clevertech.data.entity.CheckItem;
 import by.clevertech.io.MyFileReader;
+import by.clevertech.io.MyFileWriter;
+import by.clevertech.service.CheckPreparer;
 import by.clevertech.service.CheckService;
 import by.clevertech.service.dto.CheckInDto;
+import by.clevertech.service.dto.CheckOutDto;
 import by.clevertech.service.factory.ServiceFactory;
 
 public class App {
 
-	public static void main(String[] args) throws Exception {
-//		MyFileReader reader = new MyFileReader();
-//		CheckInputDto dto = reader.getCheckInputDto();
+    public static void main(String[] args) throws Exception {
 
-//		CliReader reader = new CliReader();
-//		CheckInputDto dto = reader.read(args);
-//
-//		CheckService service = ServiceFactory.INSTANCE.getService(CheckService.class);
-//		Check rawCheck = service.get(dto);
-//		List<CheckItem> list = rawCheck.getProducts();
-//		BigDecimal cost = rawCheck.getTotalCost();
-//		System.out.println(list);
-//		System.out.println(cost);
+        MyFileReader reader = new MyFileReader();
+        CheckInDto dto = reader.getCheckInDto();
+        CheckService service = ServiceFactory.INSTANCE.getService(CheckService.class);
+        CheckOutDto rawCheck = service.get(dto);
+//        ConsoleWriter writer = new ConsoleWriter();
+        MyFileWriter writer = new MyFileWriter();
+        CheckPreparer preparer = new CheckPreparer();
+        String check = preparer.prepareCheck(rawCheck);
+        writer.printCheck(check);
 
-//		LocalDateTime dateTime = LocalDateTime.now();
-//		LocalDate date = dateTime.toLocalDate();
-//		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-//		String formattedDate = date.format(dateFormat);
-//		LocalTime time = dateTime.toLocalTime();
-//		DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
-//		String formattedTime = time.format(timeFormat);
-//		System.out.println(formattedDate + "\n" + formattedTime);
-
-//		String horizonLine = "+----------------------------------------+\n";
-		String horizonLine = "+" + StringUtils.center("", 40, "-") + "+\n";
-		String vertLineStart = "| ";
-		String vertLineEnd = " |\n";
-		String head = vertLineStart + StringUtils.center("CASH RECEIPT", 38) + vertLineEnd;
-		String storeName = vertLineStart + StringUtils.center("SUPERMARKET 123", 38) + vertLineEnd;
-		String address = vertLineStart + StringUtils.center("12, MILKYWAY Galaxy/Earth", 38) + vertLineEnd;
-		String tel = vertLineStart + StringUtils.center("Tel: 123-456-7890", 38) + vertLineEnd;
-		LocalDateTime dateTime = LocalDateTime.now();
-		LocalDate date = dateTime.toLocalDate();
-		LocalTime time = dateTime.toLocalTime();
-		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		String formattedDate = date.format(dateFormat);
-		DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
-		String formattedTime = time.format(timeFormat);
-		String cashierName = "CASHIER: 1234";
-		String cashierAndDate = vertLineStart + StringUtils.rightPad(cashierName, 38 - cashierName.length())
-						+ StringUtils.leftPad(formattedDate.toString(), cashierName.length()) + vertLineEnd;
-		String timeStr = vertLineStart + StringUtils.leftPad(formattedTime, 38) + vertLineEnd;
-
-//		String prepareTableHead = StringUtils.center("QTY", 3) + StringUtils.rightPad("DESCRIPTION", 16)
-//						+ StringUtils.center("PRICE", 8) + StringUtils.center("TOTAL", 8);
-//		String tableHead = vertLineStart + prepareTableHead + vertLineEnd;
-		String qty = StringUtils.rightPad("QTY", 3);
-		String descr = StringUtils.rightPad("DESCRIPTION", 17);
-		String price = StringUtils.center("PRICE", 8);
-		String total = StringUtils.center("TOTAL", 8);
-		String tableHead = vertLineStart + qty + "  " + descr + price + total + vertLineEnd;
-		StringBuilder res = new StringBuilder(horizonLine).append(head).append(storeName).append(address).append(tel)
-						.append(cashierAndDate).append(timeStr).append(horizonLine).append(tableHead);
-
-		MyFileReader reader = new MyFileReader();
-		CheckInDto dto = reader.getCheckInputDto();
-		CheckService service = ServiceFactory.INSTANCE.getService(CheckService.class);
-		Check rawCheck = service.get(dto);
-		List<CheckItem> list = rawCheck.getProducts();
-		for (CheckItem item : list) {
-			Integer quantity = item.getQuantity();
-			String name = item.getProduct().getName();
-			BigDecimal productPrice = item.getProduct().getPrice();
-			BigDecimal totalCostProduct = item.getTotal();
-			res.append(vertLineStart).append(StringUtils.center(quantity.toString(), 3)).append("  ")
-							.append(StringUtils.rightPad(name, 17))
-							.append(StringUtils.center("$" + productPrice.toString(), 8))
-							.append(StringUtils.center("$" + totalCostProduct.toString(), 8)).append(vertLineEnd);
-		}
-		System.out.println(res);
-	}
+    }
 }

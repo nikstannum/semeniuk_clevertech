@@ -12,6 +12,7 @@ public class CheckOutDto {
 
     private String header;
     private LocalDateTime timestamp;
-    private List<CheckItem> products;
+    private List<CheckItem> items;
     private BigDecimal totalCost;
+    private BigDecimal fullCost;
 }

@@ -7,22 +7,21 @@ import by.clevertech.data.factory.DaoFactory;
 import by.clevertech.data.repository.CardRepository;
 import by.clevertech.data.repository.ProductRepository;
 import by.clevertech.service.CheckService;
-import by.clevertech.service.CrudService;
 import by.clevertech.service.impl.CheckServiceImpl;
 
 public class ServiceFactory {
 
-	public static final ServiceFactory INSTANCE = new ServiceFactory();
-	private final Map<Class<?>, CrudService<?, ?>> map;
+    public static final ServiceFactory INSTANCE = new ServiceFactory();
+    private final Map<Class<?>, CheckService> map;
 
-	private ServiceFactory() {
-		map = new HashMap<>();
-		map.put(CheckService.class, new CheckServiceImpl(DaoFactory.INSTANCE.getDao(ProductRepository.class),
-						DaoFactory.INSTANCE.getDao(CardRepository.class)));
-	}
+    private ServiceFactory() {
+        map = new HashMap<>();
+        map.put(CheckService.class, new CheckServiceImpl(DaoFactory.INSTANCE.getDao(ProductRepository.class),
+                DaoFactory.INSTANCE.getDao(CardRepository.class)));
+    }
 
-	public <T> T getService(Class<T> clazz) {
-		return (T) map.get(clazz);
-	}
+    public <T> T getService(Class<T> clazz) {
+        return (T) map.get(clazz);
+    }
 
 }
