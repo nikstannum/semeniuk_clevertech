@@ -15,7 +15,7 @@ public class HandleCardRepoImpl implements CardRepository {
 
     private long idSequence;
 
-    public HandleCardRepoImpl(Map<Long, DiscountCard> repo) {
+    public HandleCardRepoImpl() {
         this.repo = initRepoStub();
     }
 
