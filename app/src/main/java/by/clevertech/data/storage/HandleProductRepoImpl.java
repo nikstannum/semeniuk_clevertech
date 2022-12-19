@@ -9,6 +9,17 @@ import java.util.Map;
 import by.clevertech.data.entity.Product;
 import by.clevertech.data.repository.ProductRepository;
 
+/**
+ * Implements {@link ProductRepository}
+ * <p>
+ * Class for data access {@link Product}.
+ * <p>
+ * The class is like an in-memory database. Filling with data is carried out at
+ * runtime.
+ * 
+ * @author Nikita Semeniuk
+ *
+ */
 public class HandleProductRepoImpl implements ProductRepository {
 
     private final Map<Long, Product> repo;

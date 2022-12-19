@@ -1,6 +1,15 @@
 package by.clevertech.exception;
 
-public class EntityNotFoundException extends DataException {
+/**
+ * Extends {@link ClientException}
+ * <p>
+ * A class that provides the user with information about exceptions that result
+ * from a request to non-existent resources.
+ * 
+ * @author Nikita Semeniuk
+ *
+ */
+public class EntityNotFoundException extends ClientException {
 
     public EntityNotFoundException() {
     }

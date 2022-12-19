@@ -1,5 +1,14 @@
 package by.clevertech.exception;
 
+/**
+ * Extends {@link ClevertechException}
+ * <p>
+ * A class that provides the user with information about exceptions that have
+ * arisen as a result of incorrect data handling.
+ * 
+ * @author Nikita Semeniuk
+ *
+ */
 public class ClientException extends ClevertechException {
 
     public ClientException() {

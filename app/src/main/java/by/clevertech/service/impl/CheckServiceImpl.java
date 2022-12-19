@@ -16,10 +16,22 @@ import by.clevertech.service.dto.CheckInDto;
 import by.clevertech.service.dto.CheckOutDto;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Implements {@link CheckService}
+ * <p>
+ * Business domain class for processing the {@link CheckInDto} and getting the
+ * {@link CheckOutDto}
+ * 
+ * @author Nikita Semeniuk
+ *
+ */
 @RequiredArgsConstructor
 public class CheckServiceImpl implements CheckService {
     private static final int DECIMAL_SCALE = 2;
     private static final int PERCENT_100 = 100;
+    /**
+     * Set amount of discount
+     */
     private static final int DISCOUNT_SIZE = 10;
     /**
      * Minimal number of products in check to apply discounts

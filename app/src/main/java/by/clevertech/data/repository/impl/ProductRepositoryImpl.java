@@ -11,10 +11,20 @@ import java.util.List;
 import by.clevertech.data.connection.DataSource;
 import by.clevertech.data.entity.Product;
 import by.clevertech.data.repository.ProductRepository;
-import by.clevertech.exception.DataException;
+import by.clevertech.exception.ClientException;
 import by.clevertech.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Implements {@link ProductRepository}
+ * <p>
+ * Class for data access {@link Product}.
+ * <p>
+ * Database access is provided based on the implementation Java JDBC API
+ * 
+ * @author Nikita Semeniuk
+ *
+ */
 @RequiredArgsConstructor
 public class ProductRepositoryImpl implements ProductRepository {
     private static final String COL_DISCOUNT = "discount";
@@ -46,7 +56,7 @@ public class ProductRepositoryImpl implements ProductRepository {
             }
         } catch (SQLException e) { // TODO what should throw?
         }
-        throw new DataException(EXC_MSG_CREATE);
+        throw new ClientException(EXC_MSG_CREATE);
     }
 
     @Override

@@ -7,6 +7,13 @@ import java.util.List;
 import by.clevertech.data.entity.CheckItem;
 import lombok.Data;
 
+/**
+ * An entity that represents the output as the result of processing the input
+ * parameters.
+ * 
+ * @author Nikita Semeniuk
+ *
+ */
 @Data
 public class CheckOutDto {
 

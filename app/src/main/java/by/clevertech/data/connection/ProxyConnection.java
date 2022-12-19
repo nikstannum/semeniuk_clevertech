@@ -20,7 +20,18 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
+/**
+ * Implements {@link Connection}
+ * <p>
+ * A class that provides a connection to a database. Connections are stored in a
+ * connection pool in the {@link DataSource}
+ * 
+ * @author Nikita Semeniuk
+ *
+ */
+@Log4j2
 @RequiredArgsConstructor
 public class ProxyConnection implements Connection {
 
@@ -30,7 +41,8 @@ public class ProxyConnection implements Connection {
         try {
             realConnection.close();
         } catch (SQLException e) {
-            throw new RuntimeException(e.getMessage(), e.getCause()); // TODO to add logging and to log
+            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage(), e.getCause());
         }
     }
 

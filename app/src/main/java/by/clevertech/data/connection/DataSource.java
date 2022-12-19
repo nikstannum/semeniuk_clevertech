@@ -1,6 +1,5 @@
 package by.clevertech.data.connection;
 
-import java.rmi.AccessException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -9,6 +8,17 @@ import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import lombok.extern.log4j.Log4j2;
+
+/**
+ * Implements {@link AutoCloseable}
+ * <p>
+ * This class provides a source of database connections.
+ * 
+ * @author Nikita Semeniuk
+ *
+ */
+@Log4j2
 public class DataSource implements AutoCloseable {
 
     private BlockingQueue<ProxyConnection> freeConnections;
@@ -28,7 +38,8 @@ public class DataSource implements AutoCloseable {
             connection = freeConnections.take();
             givenAwayConnections.offer(connection);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e.getMessage(), e.getCause()); // TODO to add logging and to log
+            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage(), e.getCause());
         }
         return connection;
     }
@@ -43,9 +54,11 @@ public class DataSource implements AutoCloseable {
                 freeConnections.add(new ProxyConnection(realConnection));
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e.getMessage(), e.getCause()); // TODO to add logging and to log
+            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage(), e.getCause());
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e.getMessage(), e.getCause()); // TODO to add logging and to log
+            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage(), e.getCause());
         }
     }
 
@@ -60,7 +73,8 @@ public class DataSource implements AutoCloseable {
                 freeConnections.take().reallyClose();
             }
         } catch (InterruptedException e) {
-            throw new RuntimeException(e.getMessage(), e.getCause()); // TODO to add logging and to log
+            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage(), e.getCause());
         }
     }
 
@@ -71,7 +85,8 @@ public class DataSource implements AutoCloseable {
             try {
                 DriverManager.deregisterDriver(driver);
             } catch (SQLException e) {
-                throw new RuntimeException(e.getMessage(), e.getCause()); // TODO to add logging and to log
+                log.error(e.getMessage());
+                throw new RuntimeException(e.getMessage(), e.getCause());
             }
         });
     }

@@ -11,9 +11,19 @@ import java.util.List;
 import by.clevertech.data.connection.DataSource;
 import by.clevertech.data.entity.DiscountCard;
 import by.clevertech.data.repository.CardRepository;
-import by.clevertech.exception.DataException;
+import by.clevertech.exception.ClientException;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Implements {@link CardRepository}
+ * <p>
+ * Class for data access {@link DiscountCard}.
+ * <p>
+ * Database access is provided based on the implementation Java JDBC API
+ * 
+ * @author Nikita Semeniuk
+ *
+ */
 @RequiredArgsConstructor
 public class CardRepositoryImpl implements CardRepository {
     private static final String COL_DISCOUNT_SIZE = "discount_size";
@@ -41,7 +51,7 @@ public class CardRepositoryImpl implements CardRepository {
         } catch (SQLException e) {
             throw new RuntimeException(); // TODO what should throw?
         }
-        throw new DataException(EXC_MSG_CREATE);
+        throw new ClientException(EXC_MSG_CREATE);
     }
 
     @Override

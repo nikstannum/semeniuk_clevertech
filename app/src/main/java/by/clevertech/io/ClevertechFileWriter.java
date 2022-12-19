@@ -5,8 +5,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import by.clevertech.data.connection.ConfigManager;
+import by.clevertech.service.dto.CheckOutDto;
 
-public class MyFileWriter implements PrintCheck {
+/**
+ * A class that provides output of a {@link CheckOutDto} to a file.
+ * <p>
+ * The path to the file is specified in the file application.properties.
+ * 
+ * @author Nikita Semeniuk
+ *
+ */
+public class ClevertechFileWriter implements PrintCheck {
 
     @Override
     public void printCheck(String preparedCheck) {

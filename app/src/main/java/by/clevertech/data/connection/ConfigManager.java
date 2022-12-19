@@ -4,6 +4,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import lombok.extern.log4j.Log4j2;
+
+/**
+ * This class provides access to application configuration settings stored in
+ * the properties file.
+ * 
+ * @author Nikita Semeniuk
+ *
+ */
+@Log4j2
 public class ConfigManager {
 
     private final Properties properties;
@@ -15,7 +25,8 @@ public class ConfigManager {
         try (InputStream input = getClass().getResourceAsStream(PROP_FILE);) {
             properties.load(input);
         } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e.getCause()); // TODO to add logging and to log
+            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage(), e.getCause());
         }
     }
 

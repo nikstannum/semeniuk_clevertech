@@ -10,7 +10,7 @@ import java.util.Map;
 import by.clevertech.data.connection.ConfigManager;
 import by.clevertech.service.dto.CheckInDto;
 
-public class MyFileReader {
+public class ClevertechFileReader {
 
     public CheckInDto getCheckInDto() {
         return readFile();

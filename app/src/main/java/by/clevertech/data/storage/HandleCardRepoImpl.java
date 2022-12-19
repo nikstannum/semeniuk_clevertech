@@ -9,6 +9,17 @@ import java.util.Map;
 import by.clevertech.data.entity.DiscountCard;
 import by.clevertech.data.repository.CardRepository;
 
+/**
+ * Implements {@link CardRepository}
+ * <p>
+ * Class for data access {@link DiscountCard}.
+ * <p>
+ * The class is like an in-memory database. Filling with data is carried out at
+ * runtime.
+ * 
+ * @author Nikita Semeniuk
+ *
+ */
 public class HandleCardRepoImpl implements CardRepository {
 
     private final Map<Long, DiscountCard> repo;

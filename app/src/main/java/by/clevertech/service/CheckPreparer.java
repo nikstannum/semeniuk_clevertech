@@ -12,6 +12,12 @@ import org.apache.commons.lang3.StringUtils;
 import by.clevertech.data.entity.CheckItem;
 import by.clevertech.service.dto.CheckOutDto;
 
+/**
+ * A class that prepares a {@link CheckOutDto} before sending it to the user.
+ * 
+ * @author Nikita Semeniuk
+ *
+ */
 public class CheckPreparer {
     private static final int FIELD_WIDTH = 40;
     private static final int STRING_LENGTH = 38;
