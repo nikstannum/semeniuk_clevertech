@@ -24,6 +24,6 @@ Java 17, Java JDBC API, Gradle 7.5 build tool, PostgreSQL database, Lombok plugi
 
 ## Startup instructions:
 
-1) specify the necessary settings in the properties file (directory for the received file, use of the database, etc.);
-2) when using an IDE: specify the command line arguments in the configuration and run the application's main() method (App.class); when using the command line interface, compile the application and run it by specifying the necessary arguments after the class file name (App);
+1) specify the necessary settings in the properties file (directory for the received file, use of the database, etc.)
+2) when using an IDE: specify the command line arguments in the configuration and run the application's main() method (App.class); when using the command line interface, compile the application and run it by specifying the necessary arguments after the class file name (App)
 3) depending on the arguments passed (just a set of arguments or a path to a file with source data), the result of the application will be output to the standard output stream or to a file, respectively
