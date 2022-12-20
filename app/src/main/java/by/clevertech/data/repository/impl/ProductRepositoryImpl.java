@@ -7,12 +7,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import by.clevertech.data.connection.DataSource;
 import by.clevertech.data.entity.Product;
 import by.clevertech.data.repository.ProductRepository;
-import by.clevertech.exception.ClientException;
-import by.clevertech.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -30,8 +29,6 @@ public class ProductRepositoryImpl implements ProductRepository {
     private static final String COL_DISCOUNT = "discount";
     private static final String COL_PRICE = "price";
     private static final String COL_NAME = "name";
-    private static final String EXC_MSG_FOUND = "wasn't found product with id = ";
-    private static final String EXC_MSG_CREATE = "couldn't create new product";
     private static final String COL_PRODUCT_ID = "product_id";
     private static final String INSERT = "INSERT into ptoducts (name, price, discount) VALUES (?, ?, ?)";
     private static final String FIND_BY_ID = "SELECT p.product_id, p.name, p.price, p.discount FROM products p WHERE product_id = ?";
@@ -42,7 +39,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     private final DataSource dataSource;
 
     @Override
-    public Product create(Product entity) {
+    public Optional<Product> create(Product entity) {
         try (Connection connection = dataSource.getFreeConnections();
                 PreparedStatement statement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, entity.getName());
@@ -54,23 +51,25 @@ public class ProductRepositoryImpl implements ProductRepository {
                 long id = keys.getLong(COL_PRODUCT_ID);
                 return findById(id);
             }
-        } catch (SQLException e) { // TODO what should throw?
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        throw new ClientException(EXC_MSG_CREATE);
+        return Optional.empty();
     }
 
     @Override
-    public Product findById(Long id) {
+    public Optional<Product> findById(Long id) {
         try (Connection connection = dataSource.getFreeConnections();) {
             PreparedStatement statement = connection.prepareStatement(FIND_BY_ID);
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return processProduct(resultSet);
+                return Optional.of(processProduct(resultSet));
             }
-        } catch (SQLException e) { // TODO what should throw?
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        throw new EntityNotFoundException(EXC_MSG_FOUND + id);
+        return Optional.empty();
     }
 
     @Override
@@ -82,14 +81,14 @@ public class ProductRepositoryImpl implements ProductRepository {
             while (resultSet.next()) {
                 list.add(processProduct(resultSet));
             }
-            return list;
         } catch (SQLException e) {
-            throw new RuntimeException(); // TODO what should throw?
+            throw new RuntimeException(e);
         }
+        return list;
     }
 
     @Override
-    public Product update(Product entity) {
+    public Optional<Product> update(Product entity) {
         try (Connection connection = dataSource.getFreeConnections();
                 PreparedStatement statement = connection.prepareStatement(UPDATE)) {
             statement.setString(1, entity.getName());
@@ -99,7 +98,7 @@ public class ProductRepositoryImpl implements ProductRepository {
             statement.executeUpdate();
             return findById(entity.getId());
         } catch (SQLException e) {
-            throw new RuntimeException(); // TODO what should throw?
+            throw new RuntimeException(e);
         }
     }
 
@@ -111,7 +110,7 @@ public class ProductRepositoryImpl implements ProductRepository {
             int rowsDelete = statement.executeUpdate();
             return rowsDelete == 1;
         } catch (SQLException e) {
-            throw new RuntimeException(); // TODO what should throw?
+            throw new RuntimeException(e);
         }
     }
 

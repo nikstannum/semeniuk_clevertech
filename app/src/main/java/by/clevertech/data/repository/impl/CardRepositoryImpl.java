@@ -7,11 +7,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import by.clevertech.data.connection.DataSource;
 import by.clevertech.data.entity.DiscountCard;
 import by.clevertech.data.repository.CardRepository;
-import by.clevertech.exception.ClientException;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -27,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CardRepositoryImpl implements CardRepository {
     private static final String COL_DISCOUNT_SIZE = "discount_size";
-    private static final String EXC_MSG_CREATE = "couldn't create new card";
     private static final String COL_CARD_ID = "card_id";
     private static final String FIND_BY_ID = "SELECT c.card_id, c.discount_size FROM discount_card c WHERE c.card_id = ?";
     private static final String FIND_ALL = "SELECT c.card_id, c.discount_size FROM discount_card c";
@@ -38,7 +37,7 @@ public class CardRepositoryImpl implements CardRepository {
     private final DataSource dataSource;
 
     @Override
-    public DiscountCard create(DiscountCard entity) {
+    public Optional<DiscountCard> create(DiscountCard entity) {
         try (Connection connection = dataSource.getFreeConnections();
                 PreparedStatement statement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
             statement.setBigDecimal(1, entity.getDiscountSize());
@@ -49,30 +48,24 @@ public class CardRepositoryImpl implements CardRepository {
                 return findById(id);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(); // TODO what should throw?
+            throw new RuntimeException(e);
         }
-        throw new ClientException(EXC_MSG_CREATE);
+        return Optional.empty();
     }
 
     @Override
-    public DiscountCard findById(Long id) {
+    public Optional<DiscountCard> findById(Long id) {
         try (Connection connection = dataSource.getFreeConnections();
                 PreparedStatement statement = connection.prepareStatement(FIND_BY_ID)) {
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return processCard(resultSet);
+                return Optional.of(processCard(resultSet));
             }
         } catch (SQLException e) {
-            throw new RuntimeException(); // TODO what should throw?
+            throw new RuntimeException(e);
         }
-        return null;
-        /*
-         * FIXME or better throw new EntityNotFoundException("card with id = " + id +
-         * " wasn't found"); then the exception handling should be in the service method
-         * public Check get(CheckInputDto checkInputDto)
-         * 
-         */
+        return Optional.empty();
     }
 
     @Override
@@ -84,14 +77,14 @@ public class CardRepositoryImpl implements CardRepository {
             while (resultSet.next()) {
                 list.add(processCard(resultSet));
             }
-            return list;
         } catch (SQLException e) {
-            throw new RuntimeException(); // TODO what should throw?
+            throw new RuntimeException(e);
         }
+        return list;
     }
 
     @Override
-    public DiscountCard update(DiscountCard entity) {
+    public Optional<DiscountCard> update(DiscountCard entity) {
         try (Connection connection = dataSource.getFreeConnections();
                 PreparedStatement statement = connection.prepareStatement(UPDATE)) {
             statement.setBigDecimal(1, entity.getDiscountSize());
@@ -99,7 +92,7 @@ public class CardRepositoryImpl implements CardRepository {
             statement.executeUpdate();
             return findById(entity.getCardId());
         } catch (SQLException e) {
-            throw new RuntimeException(); // TODO what should throw?
+            throw new RuntimeException(e);
         }
     }
 
@@ -111,7 +104,7 @@ public class CardRepositoryImpl implements CardRepository {
             int rowsDelete = statement.executeUpdate();
             return rowsDelete == 1;
         } catch (SQLException e) {
-            throw new RuntimeException(); // TODO what should throw?
+            throw new RuntimeException(e);
         }
     }
 

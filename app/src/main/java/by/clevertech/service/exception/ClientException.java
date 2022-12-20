@@ -1,4 +1,4 @@
-package by.clevertech.exception;
+package by.clevertech.service.exception;
 
 /**
  * Extends {@link ClevertechException}

@@ -3,12 +3,12 @@
 |            SUPERMARKET 123             |
 |       12, MILKYWAY Galaxy/Earth        |
 |           Tel: 123-456-7890            |
-| CASHIER: 1234               20/12/2022 |
-|                               22:01:15 |
+| CASHIER: 1234               21/12/2022 |
+|                               00:16:05 |
 +----------------------------------------+
 | QTY  DESCRIPTION       PRICE   TOTAL   |
 |  1   yogurt            $0.87   $0.87   |
-|  6   cookie            $1.00   $6.00   |
+|  6   cookie              $1      $6    |
 |  3   butter            $1.05   $3.15   |
 |  1   soap              $0.89   $0.89   |
 |  7   candies           $3.18   $22.26  |

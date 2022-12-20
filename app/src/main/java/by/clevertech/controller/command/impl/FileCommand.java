@@ -12,6 +12,7 @@ import by.clevertech.controller.command.Command;
 import by.clevertech.data.connection.ConfigManager;
 import by.clevertech.service.CheckService;
 import by.clevertech.service.dto.CheckInDto;
+import by.clevertech.service.exception.ClevertechException;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -34,8 +35,8 @@ public class FileCommand implements Command {
         String content = "";
         try (FileReader reader = new FileReader(path); BufferedReader bufferedReader = new BufferedReader(reader)) {
             content = bufferedReader.readLine();
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        } catch (IOException ex) { // FIXME
+            throw new ClevertechException("", ex); // FIXME logging
         }
         CheckInDto dto = processContent(content);
         return dto;

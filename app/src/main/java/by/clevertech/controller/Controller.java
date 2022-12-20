@@ -1,6 +1,7 @@
 package by.clevertech.controller;
 
 import by.clevertech.controller.command.Command;
+import by.clevertech.controller.command.ExcHandler;
 import by.clevertech.controller.factory.CommandFactory;
 
 public class Controller {
@@ -14,7 +15,12 @@ public class Controller {
         }
         CommandFactory factory = CommandFactory.getINSTANCE();
         Command commandInstance = factory.getCommand(command);
-        commandInstance.execute(args);
+        try {
+            commandInstance.execute(args);
+        } catch (Exception e) {
+            ExcHandler.INSTANCE.handle(e);
+
+        }
     }
 
 }

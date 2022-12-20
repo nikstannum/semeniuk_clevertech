@@ -1,4 +1,4 @@
-package by.clevertech.service;
+package by.clevertech.service.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import by.clevertech.data.entity.CheckItem;
+import by.clevertech.service.CheckSerializer;
 import by.clevertech.service.dto.CheckOutDto;
 
 /**
@@ -18,8 +19,16 @@ import by.clevertech.service.dto.CheckOutDto;
  * @author Nikita Semeniuk
  *
  */
-public class CheckPreparer {
-    
+public class CheckStringSerializer implements CheckSerializer {
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public String serialize(CheckOutDto dto) {
+
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     private static final int FIELD_WIDTH = 40;
     private static final int STRING_LENGTH = 38;
     private static final String VERT_LINE_START = "| ";

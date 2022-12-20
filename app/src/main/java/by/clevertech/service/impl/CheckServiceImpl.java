@@ -5,16 +5,17 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import by.clevertech.data.entity.CheckItem;
 import by.clevertech.data.entity.DiscountCard;
 import by.clevertech.data.entity.Product;
 import by.clevertech.data.repository.CardRepository;
 import by.clevertech.data.repository.ProductRepository;
-import by.clevertech.service.CheckPreparer;
 import by.clevertech.service.CheckService;
 import by.clevertech.service.dto.CheckInDto;
 import by.clevertech.service.dto.CheckOutDto;
+import by.clevertech.service.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -28,6 +29,8 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 public class CheckServiceImpl implements CheckService {
+    private static final String MSG_EXC_NOT_FOUND_CARD = "wasn't found card with id = ";
+    private static final String MSG_EXC_NOT_FOUND_PRODUCT = "wasn't found product with id = ";
     private static final int DECIMAL_SCALE = 2;
     private static final int PERCENT_100 = 100;
     /**
@@ -40,7 +43,7 @@ public class CheckServiceImpl implements CheckService {
     private static final int MIN_NUMBER_OF_PRODUCTS = 5;
     private final ProductRepository productRepository;
     private final CardRepository cardRepository;
-    private final CheckPreparer preparer;
+    private final CheckStringSerializer preparer;
 
     @Override
     public String get(CheckInDto checkInputDto) {
@@ -68,7 +71,9 @@ public class CheckServiceImpl implements CheckService {
 
     private CheckItem getCheckItem(Long id, Integer quantity) {
         CheckItem item = new CheckItem();
-        Product product = productRepository.findById(id);
+        Optional<Product> optProduct = productRepository.findById(id);
+        Product product = optProduct
+                .orElseThrow(() -> new EntityNotFoundException(MSG_EXC_NOT_FOUND_PRODUCT + id));
         BigDecimal total = product.getPrice().multiply(BigDecimal.valueOf(quantity));
         item.setQuantity(quantity);
         item.setProduct(product);
@@ -107,8 +112,10 @@ public class CheckServiceImpl implements CheckService {
 
     private BigDecimal applyDiscountCard(BigDecimal cost, Long cardId) {
         BigDecimal totalCost = cost;
-        DiscountCard card = cardRepository.findById(cardId);
-        if (card != null) { // FIXME how will to processing better?
+        Optional<DiscountCard> optCard = cardRepository.findById(cardId);
+        DiscountCard card = optCard
+                .orElseThrow(() -> new EntityNotFoundException(MSG_EXC_NOT_FOUND_CARD + cardId));
+        if (card != null) {
             BigDecimal discountSize = card.getDiscountSize();
             BigDecimal discountFactor = BigDecimal.valueOf(PERCENT_100).subtract(discountSize);
             totalCost = totalCost.multiply(discountFactor).divide(BigDecimal.valueOf(PERCENT_100));

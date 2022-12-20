@@ -1,10 +1,11 @@
-package by.clevertech.data.storage;
+package by.clevertech.data.repository.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import by.clevertech.data.entity.DiscountCard;
 import by.clevertech.data.repository.CardRepository;
@@ -20,13 +21,13 @@ import by.clevertech.data.repository.CardRepository;
  * @author Nikita Semeniuk
  *
  */
-public class HandleCardRepoImpl implements CardRepository {
+public class CardRepositoryInMemoryImpl implements CardRepository {
 
     private final Map<Long, DiscountCard> repo;
 
     private long idSequence;
 
-    public HandleCardRepoImpl() {
+    public CardRepositoryInMemoryImpl() {
         this.repo = initRepoStub();
     }
 
@@ -59,15 +60,15 @@ public class HandleCardRepoImpl implements CardRepository {
     }
 
     @Override
-    public DiscountCard create(DiscountCard entity) {
+    public Optional<DiscountCard> create(DiscountCard entity) {
         Long id = getIdSequence();
         entity.setCardId(id);
-        return repo.put(id, entity);
+        return Optional.of(repo.put(id, entity));
     }
 
     @Override
-    public DiscountCard findById(Long id) {
-        return repo.get(id);
+    public Optional<DiscountCard> findById(Long id) {
+        return Optional.of(repo.get(id));
     }
 
     @Override
@@ -76,8 +77,9 @@ public class HandleCardRepoImpl implements CardRepository {
     }
 
     @Override
-    public DiscountCard update(DiscountCard entity) {
-        return repo.replace(entity.getCardId(), entity);
+    public Optional<DiscountCard> update(DiscountCard entity) {
+        DiscountCard updated = repo.replace(entity.getCardId(), entity);
+        return Optional.of(updated);
     }
 
     @Override

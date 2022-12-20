@@ -1,10 +1,11 @@
-package by.clevertech.data.storage;
+package by.clevertech.data.repository.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import by.clevertech.data.entity.Product;
 import by.clevertech.data.repository.ProductRepository;
@@ -20,13 +21,13 @@ import by.clevertech.data.repository.ProductRepository;
  * @author Nikita Semeniuk
  *
  */
-public class HandleProductRepoImpl implements ProductRepository {
+public class ProductRepositoryInMemoryImpl implements ProductRepository {
 
     private final Map<Long, Product> repo;
 
     private long idSequence;
 
-    public HandleProductRepoImpl() {
+    public ProductRepositoryInMemoryImpl() {
         this.repo = initRepoStub();
     }
 
@@ -128,15 +129,15 @@ public class HandleProductRepoImpl implements ProductRepository {
     }
 
     @Override
-    public Product create(Product entity) {
+    public Optional<Product> create(Product entity) {
         Long id = getIdSequence();
         entity.setId(id);
-        return repo.put(id, entity);
+        return Optional.of(repo.put(id, entity));
     }
 
     @Override
-    public Product findById(Long id) {
-        return repo.get(id);
+    public Optional<Product> findById(Long id) {
+        return Optional.of(repo.get(id));
     }
 
     @Override
@@ -145,8 +146,9 @@ public class HandleProductRepoImpl implements ProductRepository {
     }
 
     @Override
-    public Product update(Product entity) {
-        return repo.replace(entity.getId(), entity);
+    public Optional<Product> update(Product entity) {
+        Product updated = repo.replace(entity.getId(), entity);
+        return Optional.of(updated);
     }
 
     @Override
