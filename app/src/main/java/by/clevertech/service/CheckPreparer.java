@@ -19,6 +19,7 @@ import by.clevertech.service.dto.CheckOutDto;
  *
  */
 public class CheckPreparer {
+    
     private static final int FIELD_WIDTH = 40;
     private static final int STRING_LENGTH = 38;
     private static final String VERT_LINE_START = "| ";

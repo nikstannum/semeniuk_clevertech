@@ -1,13 +1,29 @@
-package by.clevertech.io;
+package by.clevertech.controller.command.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import by.clevertech.controller.command.Command;
+import by.clevertech.service.CheckService;
 import by.clevertech.service.dto.CheckInDto;
+import lombok.RequiredArgsConstructor;
 
-public class CliReader {
+@RequiredArgsConstructor
+public class CliCommand implements Command {
+    private final CheckService service;
 
-    public CheckInDto getCheckInDto(String[] args) {
+    @Override
+    public void execute(String[] args) {
+        CheckInDto in = read(args);
+        String out = service.get(in);
+        write(out);
+    }
+
+    private void write(String out) {
+        System.out.println(out);
+    }
+
+    private CheckInDto read(String[] args) {
         CheckInDto dto = new CheckInDto();
         Map<Long, Integer> map = new HashMap<>();
         Long cardId = null;

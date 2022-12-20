@@ -1,24 +1,32 @@
-package by.clevertech.io;
+package by.clevertech.controller.command.impl;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import by.clevertech.controller.command.Command;
 import by.clevertech.data.connection.ConfigManager;
+import by.clevertech.service.CheckService;
 import by.clevertech.service.dto.CheckInDto;
+import lombok.RequiredArgsConstructor;
 
-public class ClevertechFileReader {
+@RequiredArgsConstructor
+public class FileCommand implements Command {
+    private final CheckService service;
 
-    public CheckInDto getCheckInDto() {
-        return readFile();
+    @Override
+    public void execute(String[] args) {
+        CheckInDto in = read(args);
+        String out = service.get(in);
+        write(out);
     }
 
-    private CheckInDto readFile() {
-        ConfigManager props = ConfigManager.INSTANCE;
-        String path = props.getProperty("input.file");
+    private CheckInDto read(String[] args) {
+        String path = args[0];
         File file = new File(path);
         if (!file.exists() || !file.canRead()) {
             throw new RuntimeException("file is not exists or no readable"); // FIXME own exception
@@ -31,6 +39,21 @@ public class ClevertechFileReader {
         }
         CheckInDto dto = processContent(content);
         return dto;
+    }
+
+    private void write(String preparedCheck) {
+        ConfigManager props = ConfigManager.INSTANCE;
+        String outputDir = props.getProperty("output.dir");
+        String fileName = "result.txt";
+        File file = new File(outputDir + fileName);
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.write(preparedCheck);
+            writer.flush();
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     private CheckInDto processContent(String str) {

@@ -3,9 +3,13 @@ package by.clevertech.service.factory;
 import java.util.HashMap;
 import java.util.Map;
 
+import by.clevertech.data.connection.ConfigManager;
+import by.clevertech.data.factory.AbstractFactory;
 import by.clevertech.data.factory.DaoFactory;
+import by.clevertech.data.factory.DbDaoFactory;
 import by.clevertech.data.repository.CardRepository;
 import by.clevertech.data.repository.ProductRepository;
+import by.clevertech.service.CheckPreparer;
 import by.clevertech.service.CheckService;
 import by.clevertech.service.impl.CheckServiceImpl;
 
@@ -15,9 +19,18 @@ public class ServiceFactory {
     private final Map<Class<?>, CheckService> map;
 
     private ServiceFactory() {
+        AbstractFactory factory;
+        boolean useDb = Boolean.parseBoolean(ConfigManager.INSTANCE.getProperty("use.db"));
+        if (useDb) {
+            factory = DbDaoFactory.INSTANCE;
+        } else {
+            factory = DaoFactory.INSTANCE;
+        }
+
         map = new HashMap<>();
-        map.put(CheckService.class, new CheckServiceImpl(DaoFactory.INSTANCE.getDao(ProductRepository.class),
-                DaoFactory.INSTANCE.getDao(CardRepository.class)));
+        map.put(CheckService.class, new CheckServiceImpl(factory.getDao(ProductRepository.class),
+                factory.getDao(CardRepository.class), new CheckPreparer()));
+
     }
 
     public <T> T getService(Class<T> clazz) {

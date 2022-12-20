@@ -11,6 +11,7 @@ import by.clevertech.data.entity.DiscountCard;
 import by.clevertech.data.entity.Product;
 import by.clevertech.data.repository.CardRepository;
 import by.clevertech.data.repository.ProductRepository;
+import by.clevertech.service.CheckPreparer;
 import by.clevertech.service.CheckService;
 import by.clevertech.service.dto.CheckInDto;
 import by.clevertech.service.dto.CheckOutDto;
@@ -39,9 +40,10 @@ public class CheckServiceImpl implements CheckService {
     private static final int MIN_NUMBER_OF_PRODUCTS = 5;
     private final ProductRepository productRepository;
     private final CardRepository cardRepository;
+    private final CheckPreparer preparer;
 
     @Override
-    public CheckOutDto get(CheckInDto checkInputDto) {
+    public String get(CheckInDto checkInputDto) {
         CheckOutDto check = new CheckOutDto();
         List<CheckItem> items = getCheckItems(checkInputDto.getProducts());
         check.setItems(items);
@@ -49,7 +51,8 @@ public class CheckServiceImpl implements CheckService {
         check.setFullCost(getFullCost(items));
         BigDecimal totalCost = getTotalCost(cardId, items);
         check.setTotalCost(totalCost);
-        return check;
+        String out = preparer.prepareCheck(check);
+        return out;
     }
 
     private BigDecimal getTotalCost(Long cardId, List<CheckItem> items) {
