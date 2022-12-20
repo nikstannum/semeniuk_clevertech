@@ -3,8 +3,8 @@
 |            SUPERMARKET 123             |
 |       12, MILKYWAY Galaxy/Earth        |
 |           Tel: 123-456-7890            |
-| CASHIER: 1234               18/12/2022 |
-|                               16:21:00 |
+| CASHIER: 1234               20/12/2022 |
+|                               22:01:15 |
 +----------------------------------------+
 | QTY  DESCRIPTION       PRICE   TOTAL   |
 |  1   yogurt            $0.87   $0.87   |

@@ -7,7 +7,7 @@ public class Controller {
 
     public void process(String[] args) {
         String command;
-        if (args.length == 1) {
+        if (args[0].contains("/")) {
             command = "file";
         } else {
             command = "cli";
