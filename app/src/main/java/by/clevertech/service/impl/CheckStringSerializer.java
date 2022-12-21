@@ -24,9 +24,8 @@ public class CheckStringSerializer implements CheckSerializer {
     @SuppressWarnings("unchecked")
     @Override
     public String serialize(CheckOutDto dto) {
-
-        // TODO Auto-generated method stub
-        return null;
+        StringBuilder result = new StringBuilder();
+        return result.append(addHeader()).append(addItems(dto)).append(addFooter(dto)).toString();
     }
 
     private static final int FIELD_WIDTH = 40;
@@ -34,12 +33,6 @@ public class CheckStringSerializer implements CheckSerializer {
     private static final String VERT_LINE_START = "| ";
     private static final String VERT_LINE_END = " |\n";
     private static final String HORIZON_LINE = "+" + StringUtils.center("", FIELD_WIDTH, "-") + "+\n";
-
-    public String prepareCheck(CheckOutDto checkOutDto) {
-        StringBuilder result = new StringBuilder();
-        return result.append(addHeader()).append(addItems(checkOutDto)).append(addFooter(checkOutDto)).toString();
-
-    }
 
     private StringBuilder addItems(CheckOutDto checkOutDto) {
         StringBuilder result = new StringBuilder();
