@@ -8,11 +8,7 @@ public class Controller {
 
     public void process(String[] args) {
         String command;
-        if (args[0].contains("/")) {
-            command = "file";
-        } else {
-            command = "cli";
-        }
+        command = args[0].contains("/") ? "file" : "cli";
         CommandFactory factory = CommandFactory.getINSTANCE();
         Command commandInstance = factory.getCommand(command);
         try {

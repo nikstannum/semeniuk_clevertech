@@ -4,19 +4,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 import by.clevertech.controller.command.Command;
+import by.clevertech.service.CheckSerializer;
 import by.clevertech.service.CheckService;
 import by.clevertech.service.dto.CheckInDto;
+import by.clevertech.service.dto.CheckOutDto;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class CliCommand implements Command {
     private final CheckService service;
+    private final CheckSerializer serializer;
 
     @Override
     public void execute(String[] args) {
         CheckInDto in = read(args);
-        String out = service.get(in);
-        write(out);
+        CheckOutDto out = service.get(in);
+        String serialized = serializer.serialize(out);
+        write(serialized);
     }
 
     private void write(String out) {

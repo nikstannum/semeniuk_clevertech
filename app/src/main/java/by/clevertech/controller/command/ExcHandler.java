@@ -16,13 +16,13 @@ public enum ExcHandler {
 
     public void handle(Exception e) {
         if (e instanceof EntityNotFoundException) {
-            log.error(e.getMessage());
+            log.error(e);
             System.err.println(MSG_CLIENT_ERROR + " " + e.getMessage());
         } else if (e instanceof ClientException) {
-            log.error(e.getMessage());
+            log.error(e);
             System.err.println(MSG_CLIENT_ERROR + " " + e.getMessage());
         } else if (e instanceof ClevertechException) {
-            log.error(e.getMessage());
+            log.error(e);
             System.err.println(MSG_CLIENT_ERROR + " " + e.getMessage());
         } else {
             log.error(e);

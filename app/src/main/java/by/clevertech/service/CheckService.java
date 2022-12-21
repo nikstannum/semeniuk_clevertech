@@ -1,6 +1,7 @@
 package by.clevertech.service;
 
 import by.clevertech.service.dto.CheckInDto;
+import by.clevertech.service.dto.CheckOutDto;
 
 /**
  * Business domain main interface
@@ -9,5 +10,5 @@ import by.clevertech.service.dto.CheckInDto;
  *
  */
 public interface CheckService {
-    public String get(CheckInDto checkInputDto);
+    public CheckOutDto get(CheckInDto checkInputDto);
 }

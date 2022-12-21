@@ -10,33 +10,37 @@ import java.util.Map;
 
 import by.clevertech.controller.command.Command;
 import by.clevertech.data.connection.ConfigManager;
+import by.clevertech.service.CheckSerializer;
 import by.clevertech.service.CheckService;
 import by.clevertech.service.dto.CheckInDto;
+import by.clevertech.service.dto.CheckOutDto;
 import by.clevertech.service.exception.ClevertechException;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class FileCommand implements Command {
     private final CheckService service;
+    private final CheckSerializer serializer;
 
     @Override
     public void execute(String[] args) {
         CheckInDto in = read(args);
-        String out = service.get(in);
-        write(out);
+        CheckOutDto out = service.get(in);
+        String serialized = serializer.serialize(out);
+        write(serialized);
     }
 
     private CheckInDto read(String[] args) {
         String path = args[0];
         File file = new File(path);
         if (!file.exists() || !file.canRead()) {
-            throw new RuntimeException("file is not exists or no readable"); // FIXME own exception
+            throw new ClevertechException("file is not exists or no readable");
         }
         String content = "";
         try (FileReader reader = new FileReader(path); BufferedReader bufferedReader = new BufferedReader(reader)) {
             content = bufferedReader.readLine();
-        } catch (IOException ex) { // FIXME
-            throw new ClevertechException("", ex); // FIXME logging
+        } catch (IOException ex) {
+            throw new ClevertechException("file read error", ex);
         }
         CheckInDto dto = processContent(content);
         return dto;
@@ -50,10 +54,8 @@ public class FileCommand implements Command {
         try (FileWriter writer = new FileWriter(file)) {
             writer.write(preparedCheck);
             writer.flush();
-
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new ClevertechException("file write error", e);
         }
     }
 

@@ -43,10 +43,9 @@ public class CheckServiceImpl implements CheckService {
     private static final int MIN_NUMBER_OF_PRODUCTS = 5;
     private final ProductRepository productRepository;
     private final CardRepository cardRepository;
-    private final CheckStringSerializer preparer;
 
     @Override
-    public String get(CheckInDto checkInputDto) {
+    public CheckOutDto get(CheckInDto checkInputDto) {
         CheckOutDto check = new CheckOutDto();
         List<CheckItem> items = getCheckItems(checkInputDto.getProducts());
         check.setItems(items);
@@ -54,8 +53,7 @@ public class CheckServiceImpl implements CheckService {
         check.setFullCost(getFullCost(items));
         BigDecimal totalCost = getTotalCost(cardId, items);
         check.setTotalCost(totalCost);
-        String out = preparer.prepareCheck(check);
-        return out;
+        return check;
     }
 
     private BigDecimal getTotalCost(Long cardId, List<CheckItem> items) {
@@ -72,8 +70,7 @@ public class CheckServiceImpl implements CheckService {
     private CheckItem getCheckItem(Long id, Integer quantity) {
         CheckItem item = new CheckItem();
         Optional<Product> optProduct = productRepository.findById(id);
-        Product product = optProduct
-                .orElseThrow(() -> new EntityNotFoundException(MSG_EXC_NOT_FOUND_PRODUCT + id));
+        Product product = optProduct.orElseThrow(() -> new EntityNotFoundException(MSG_EXC_NOT_FOUND_PRODUCT + id));
         BigDecimal total = product.getPrice().multiply(BigDecimal.valueOf(quantity));
         item.setQuantity(quantity);
         item.setProduct(product);
@@ -113,8 +110,7 @@ public class CheckServiceImpl implements CheckService {
     private BigDecimal applyDiscountCard(BigDecimal cost, Long cardId) {
         BigDecimal totalCost = cost;
         Optional<DiscountCard> optCard = cardRepository.findById(cardId);
-        DiscountCard card = optCard
-                .orElseThrow(() -> new EntityNotFoundException(MSG_EXC_NOT_FOUND_CARD + cardId));
+        DiscountCard card = optCard.orElseThrow(() -> new EntityNotFoundException(MSG_EXC_NOT_FOUND_CARD + cardId));
         if (card != null) {
             BigDecimal discountSize = card.getDiscountSize();
             BigDecimal discountFactor = BigDecimal.valueOf(PERCENT_100).subtract(discountSize);
