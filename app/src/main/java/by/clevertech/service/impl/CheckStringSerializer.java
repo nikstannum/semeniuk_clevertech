@@ -21,6 +21,15 @@ import by.clevertech.service.dto.CheckOutDto;
  */
 public class CheckStringSerializer implements CheckSerializer {
 
+    private static final int FIELD_WIDTH = 40;
+    private static final int STRING_LENGTH = 38;
+    private static final String VERT_LINE_START = "| ";
+    private static final String VERT_LINE_END = " |\n";
+    private static final String HORIZON_LINE = "+" + StringUtils.center("", FIELD_WIDTH, "-") + "+\n";
+
+    /**
+     * serializes a {@link CheckOutDto} to a string
+     */
     @SuppressWarnings("unchecked")
     @Override
     public String serialize(CheckOutDto dto) {
@@ -28,12 +37,12 @@ public class CheckStringSerializer implements CheckSerializer {
         return result.append(addHeader()).append(addItems(dto)).append(addFooter(dto)).toString();
     }
 
-    private static final int FIELD_WIDTH = 40;
-    private static final int STRING_LENGTH = 38;
-    private static final String VERT_LINE_START = "| ";
-    private static final String VERT_LINE_END = " |\n";
-    private static final String HORIZON_LINE = "+" + StringUtils.center("", FIELD_WIDTH, "-") + "+\n";
-
+    /**
+     * adds items to the receipt
+     * 
+     * @param checkOutDto the serializable object
+     * @return string representation of a {@link CheckOutDto} with commodity items
+     */
     private StringBuilder addItems(CheckOutDto checkOutDto) {
         StringBuilder result = new StringBuilder();
         List<CheckItem> items = checkOutDto.getItems();
@@ -50,6 +59,11 @@ public class CheckStringSerializer implements CheckSerializer {
         return result;
     }
 
+    /**
+     * adds header to the receipt
+     * 
+     * @return string representation of a {@link CheckOutDto} with the header
+     */
     private StringBuilder addHeader() {
         String head = VERT_LINE_START + StringUtils.center("CASH RECEIPT", STRING_LENGTH) + VERT_LINE_END;
         String storeName = VERT_LINE_START + StringUtils.center("SUPERMARKET 123", STRING_LENGTH) + VERT_LINE_END;
@@ -78,6 +92,13 @@ public class CheckStringSerializer implements CheckSerializer {
         return result;
     }
 
+    /**
+     * adds a footer to the receipt including the full cost, the discount amount and
+     * the final cost
+     * 
+     * @param dto the serializable object
+     * @return string representation of a {@link CheckOutDto} with the footer
+     */
     private StringBuilder addFooter(CheckOutDto dto) {
         StringBuilder result = new StringBuilder();
         String doubleHorizonLine = "+" + StringUtils.center("", FIELD_WIDTH, "=") + "+\n";

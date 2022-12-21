@@ -44,6 +44,10 @@ public class CheckServiceImpl implements CheckService {
     private final ProductRepository productRepository;
     private final CardRepository cardRepository;
 
+    /**
+     * The main method of business logic. Calculates the full cost and the cost with
+     * discounts, including the discount card
+     */
     @Override
     public CheckOutDto get(CheckInDto checkInputDto) {
         CheckOutDto check = new CheckOutDto();
@@ -56,17 +60,26 @@ public class CheckServiceImpl implements CheckService {
         return check;
     }
 
-    private BigDecimal getTotalCost(Long cardId, List<CheckItem> items) {
-        BigDecimal costWithoutCard = applyProductDiscounts(items);
-        return cardId == null ? costWithoutCard : applyDiscountCard(costWithoutCard, cardId);
-    }
-
+    /**
+     * serializes a map containing product ids and quantities into a list of product
+     * items
+     * 
+     * @param products the map containing product ids and quantities
+     * @return list of product
+     */
     private List<CheckItem> getCheckItems(Map<Long, Integer> products) {
         List<CheckItem> items = new ArrayList<>();
         products.forEach((id, quantity) -> items.add(getCheckItem(id, quantity)));
         return items;
     }
 
+    /**
+     * serializes to heading based on id and quantity
+     * 
+     * @param id       product id
+     * @param quantity the quantity of product
+     * @return item
+     */
     private CheckItem getCheckItem(Long id, Integer quantity) {
         CheckItem item = new CheckItem();
         Optional<Product> optProduct = productRepository.findById(id);
@@ -78,6 +91,13 @@ public class CheckServiceImpl implements CheckService {
         return item;
     }
 
+    /**
+     * Calculates the total cost of a receipt
+     * 
+     * @param items commodity items
+     * @return full cost
+     */
+
     private BigDecimal getFullCost(List<CheckItem> items) {
         BigDecimal fullCost = BigDecimal.ZERO;
         for (CheckItem item : items) {
@@ -86,12 +106,25 @@ public class CheckServiceImpl implements CheckService {
         return fullCost.setScale(DECIMAL_SCALE, RoundingMode.HALF_UP);
     }
 
-    private BigDecimal costDicsountItem(CheckItem item) {
-        BigDecimal discountForDiscountProduct = BigDecimal.valueOf(DISCOUNT_SIZE);
-        BigDecimal discountFactor = BigDecimal.valueOf(PERCENT_100).subtract(discountForDiscountProduct);
-        BigDecimal cost = item.getTotal().multiply(discountFactor).divide(BigDecimal.valueOf(PERCENT_100));
-        return cost.setScale(DECIMAL_SCALE, RoundingMode.HALF_UP);
+    /**
+     * Gets the final cost of the receipt after all discounts have been applied
+     * 
+     * @param cardId discount card id
+     * @param items  list of commodity items
+     * @return price with discount
+     */
+    private BigDecimal getTotalCost(Long cardId, List<CheckItem> items) {
+        BigDecimal costWithoutCard = applyProductDiscounts(items);
+        return cardId == null ? costWithoutCard : applyDiscountCard(costWithoutCard, cardId);
     }
+
+    /**
+     * Applies a discount on promotional items subject to the quantity purchase
+     * requirement
+     * 
+     * @param items the list of commodity items
+     * @return çrice including discount for promotional goods
+     */
 
     private BigDecimal applyProductDiscounts(List<CheckItem> items) {
         BigDecimal totalCost = BigDecimal.ZERO;
@@ -107,6 +140,27 @@ public class CheckServiceImpl implements CheckService {
         return totalCost.setScale(DECIMAL_SCALE, RoundingMode.HALF_UP);
     }
 
+    /**
+     * Calculates the cost of a commodity position of a product that is on sale
+     * 
+     * @param item the check item
+     * @return unit cost
+     */
+    private BigDecimal costDicsountItem(CheckItem item) {
+        BigDecimal discountForDiscountProduct = BigDecimal.valueOf(DISCOUNT_SIZE);
+        BigDecimal discountFactor = BigDecimal.valueOf(PERCENT_100).subtract(discountForDiscountProduct);
+        BigDecimal cost = item.getTotal().multiply(discountFactor).divide(BigDecimal.valueOf(PERCENT_100));
+        return cost.setScale(DECIMAL_SCALE, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * applies a discount on a discount card
+     * 
+     * @param cost   the cost of the check calculated taking into account the
+     *               discount on promotional goods
+     * @param cardId discount card id
+     * @return
+     */
     private BigDecimal applyDiscountCard(BigDecimal cost, Long cardId) {
         BigDecimal totalCost = cost;
         Optional<DiscountCard> optCard = cardRepository.findById(cardId);
@@ -118,5 +172,4 @@ public class CheckServiceImpl implements CheckService {
         }
         return totalCost.setScale(DECIMAL_SCALE, RoundingMode.HALF_UP);
     }
-
 }

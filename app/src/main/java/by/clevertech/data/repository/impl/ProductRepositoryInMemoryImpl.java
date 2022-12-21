@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import by.clevertech.data.entity.Product;
 import by.clevertech.data.repository.ProductRepository;
+import by.clevertech.service.exception.EntityNotFoundException;
 
 /**
  * Implements {@link ProductRepository}
@@ -23,6 +24,8 @@ import by.clevertech.data.repository.ProductRepository;
  */
 public class ProductRepositoryInMemoryImpl implements ProductRepository {
 
+    private static final String EXC_MSG_NOT_FOUND = "wasn't found product with id = ";
+
     private final Map<Long, Product> repo;
 
     private long idSequence;
@@ -31,9 +34,52 @@ public class ProductRepositoryInMemoryImpl implements ProductRepository {
         this.repo = initRepoStub();
     }
 
+    @Override
+    public Optional<Product> findById(Long id) {
+        try {
+            return Optional.of(repo.get(id));
+        } catch (NullPointerException e) {
+            throw new EntityNotFoundException(EXC_MSG_NOT_FOUND + id, e);
+        }
+    }
+
+    @Override
+    public Optional<Product> create(Product entity) {
+        Long id = getIdSequence();
+        entity.setId(id);
+        return Optional.of(repo.put(id, entity));
+    }
+
+    @Override
+    public List<Product> findAll() {
+        return new ArrayList<>(repo.values());
+    }
+
+    @Override
+    public Optional<Product> update(Product entity) {
+        Product updated = repo.replace(entity.getId(), entity);
+        return Optional.of(updated);
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        return repo.remove(id) != null;
+    }
+
+    /**
+     * assigns an id to an object
+     * 
+     * @return object id
+     */
     private long getIdSequence() {
         return ++idSequence;
     }
+
+    /**
+     * fills the map with data
+     * 
+     * @return filled map
+     */
 
     private Map<Long, Product> initRepoStub() {
         Map<Long, Product> repo = new HashMap<>();
@@ -126,33 +172,5 @@ public class ProductRepositoryInMemoryImpl implements ProductRepository {
         repo.put(id11, p11);
 
         return repo;
-    }
-
-    @Override
-    public Optional<Product> create(Product entity) {
-        Long id = getIdSequence();
-        entity.setId(id);
-        return Optional.of(repo.put(id, entity));
-    }
-
-    @Override
-    public Optional<Product> findById(Long id) {
-        return Optional.of(repo.get(id));
-    }
-
-    @Override
-    public List<Product> findAll() {
-        return new ArrayList<>(repo.values());
-    }
-
-    @Override
-    public Optional<Product> update(Product entity) {
-        Product updated = repo.replace(entity.getId(), entity);
-        return Optional.of(updated);
-    }
-
-    @Override
-    public boolean delete(Long id) {
-        return repo.remove(id) != null;
     }
 }

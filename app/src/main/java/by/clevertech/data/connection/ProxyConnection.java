@@ -37,6 +37,9 @@ public class ProxyConnection implements Connection {
 
     private final Connection realConnection;
 
+    /**
+     * closes the connection
+     */
     void reallyClose() {
         try {
             realConnection.close();
@@ -46,6 +49,9 @@ public class ProxyConnection implements Connection {
         }
     }
 
+    /**
+     * returns the connection to the data source
+     */
     @Override
     public void close() throws SQLException {
         DataSource.INSTANCE.releaseConnection(this);

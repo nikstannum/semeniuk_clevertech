@@ -17,11 +17,22 @@ import by.clevertech.service.dto.CheckOutDto;
 import by.clevertech.service.exception.ClevertechException;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Implements {@link Command}
+ * <p>
+ * The class provides user interaction through the file system
+ * 
+ * @author Nikita Semeniuk
+ *
+ */
 @RequiredArgsConstructor
 public class FileCommand implements Command {
     private final CheckService service;
     private final CheckSerializer serializer;
 
+    /**
+     * command execution method
+     */
     @Override
     public void execute(String[] args) {
         CheckInDto in = read(args);
@@ -30,6 +41,13 @@ public class FileCommand implements Command {
         write(serialized);
     }
 
+    /**
+     * reads the contents of a file
+     * 
+     * @param args of command line
+     * @return new a {@link CheckInDto} containing a map of data about products (id,
+     *         quantity) and a discount card (id)
+     */
     private CheckInDto read(String[] args) {
         String path = args[0];
         File file = new File(path);
@@ -46,6 +64,12 @@ public class FileCommand implements Command {
         return dto;
     }
 
+    /**
+     * outputs {@link CheckOutDto} to file
+     * 
+     * @param preparedCheck the receipt prepared for printing
+     */
+
     private void write(String preparedCheck) {
         ConfigManager props = ConfigManager.INSTANCE;
         String outputDir = props.getProperty("output.dir");
@@ -59,6 +83,13 @@ public class FileCommand implements Command {
         }
     }
 
+    /**
+     * parses the contents of a file
+     * 
+     * @param str the file content as required
+     * @return new {@link CheckInDto} containing a map of data about products (id,
+     *         quantity) and a discount card (id)
+     */
     private CheckInDto processContent(String str) {
         CheckInDto dto = new CheckInDto();
         String[] arr = str.split(" ");

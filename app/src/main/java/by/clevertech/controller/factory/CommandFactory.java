@@ -10,6 +10,12 @@ import by.clevertech.service.CheckService;
 import by.clevertech.service.factory.SerializerFactory;
 import by.clevertech.service.factory.ServiceFactory;
 
+/**
+ * Factory to receive the {@link Command}
+ * 
+ * @author Nikita Semeniuk
+ *
+ */
 public class CommandFactory {
 
     private static final CommandFactory INSTANCE = new CommandFactory();
@@ -20,13 +26,23 @@ public class CommandFactory {
         commands.put("file", new FileCommand(ServiceFactory.INSTANCE.getService(CheckService.class),
                 SerializerFactory.INSTANCE.getSerializer("string")));
         commands.put("cli", new CliCommand(ServiceFactory.INSTANCE.getService(CheckService.class),
-                SerializerFactory.INSTANCE.getSerializer("string"))); 
+                SerializerFactory.INSTANCE.getSerializer("string")));
     }
 
+    /**
+     * main factory method
+     * 
+     * @param <T>     return type
+     * @param command the non-null command
+     * @return class that implements the interface {@link Command}
+     */
     public <T> T getCommand(String command) {
         return (T) commands.get(command);
     }
 
+    /**
+     * @return this {@link CommandFactory}
+     */
     public static CommandFactory getINSTANCE() {
         return INSTANCE;
     }

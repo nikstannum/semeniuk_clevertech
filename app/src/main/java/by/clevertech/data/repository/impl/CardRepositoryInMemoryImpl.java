@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import by.clevertech.data.entity.DiscountCard;
 import by.clevertech.data.repository.CardRepository;
+import by.clevertech.service.exception.EntityNotFoundException;
 
 /**
  * Implements {@link CardRepository}
@@ -23,6 +24,8 @@ import by.clevertech.data.repository.CardRepository;
  */
 public class CardRepositoryInMemoryImpl implements CardRepository {
 
+    private static final String EXC_MSG_NOT_FOUND = "wasn't found card with id = ";
+
     private final Map<Long, DiscountCard> repo;
 
     private long idSequence;
@@ -31,10 +34,52 @@ public class CardRepositoryInMemoryImpl implements CardRepository {
         this.repo = initRepoStub();
     }
 
+    @Override
+    public Optional<DiscountCard> findById(Long id) {
+        try {
+            return Optional.of(repo.get(id));
+        } catch (NullPointerException e) {
+            throw new EntityNotFoundException(EXC_MSG_NOT_FOUND + id, e);
+        }
+    }
+
+    @Override
+    public Optional<DiscountCard> create(DiscountCard entity) {
+        Long id = getIdSequence();
+        entity.setCardId(id);
+        return Optional.of(repo.put(id, entity));
+    }
+
+    @Override
+    public List<DiscountCard> findAll() {
+        return new ArrayList<>(repo.values());
+    }
+
+    @Override
+    public Optional<DiscountCard> update(DiscountCard entity) {
+        DiscountCard updated = repo.replace(entity.getCardId(), entity);
+        return Optional.of(updated);
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        return repo.remove(id) != null;
+    }
+
+    /**
+     * assigns an id to an object
+     * 
+     * @return object id
+     */
     private long getIdSequence() {
         return ++idSequence;
     }
 
+    /**
+     * fills the map with data
+     * 
+     * @return filled map
+     */
     private Map<Long, DiscountCard> initRepoStub() {
         Map<Long, DiscountCard> repo = new HashMap<>();
 
@@ -57,33 +102,5 @@ public class CardRepositoryInMemoryImpl implements CardRepository {
         repo.put(id3, c3);
 
         return repo;
-    }
-
-    @Override
-    public Optional<DiscountCard> create(DiscountCard entity) {
-        Long id = getIdSequence();
-        entity.setCardId(id);
-        return Optional.of(repo.put(id, entity));
-    }
-
-    @Override
-    public Optional<DiscountCard> findById(Long id) {
-        return Optional.of(repo.get(id));
-    }
-
-    @Override
-    public List<DiscountCard> findAll() {
-        return new ArrayList<>(repo.values());
-    }
-
-    @Override
-    public Optional<DiscountCard> update(DiscountCard entity) {
-        DiscountCard updated = repo.replace(entity.getCardId(), entity);
-        return Optional.of(updated);
-    }
-
-    @Override
-    public boolean delete(Long id) {
-        return repo.remove(id) != null;
     }
 }

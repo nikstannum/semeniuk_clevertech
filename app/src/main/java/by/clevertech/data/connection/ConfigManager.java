@@ -30,6 +30,12 @@ public class ConfigManager {
         }
     }
 
+    /**
+     * returns property by key from properties file
+     * 
+     * @param key
+     * @return value
+     */
     public String getProperty(String key) {
         return properties.getProperty(key);
     }

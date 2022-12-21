@@ -9,6 +9,7 @@ package by.clevertech.service.exception;
  * @author Nikita Semeniuk
  *
  */
+@SuppressWarnings("serial")
 public class EntityNotFoundException extends ClientException {
 
     public EntityNotFoundException() {

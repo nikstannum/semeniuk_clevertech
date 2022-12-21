@@ -9,6 +9,7 @@ package by.clevertech.service.exception;
  * @author Nikita Semeniuk
  *
  */
+@SuppressWarnings("serial")
 public class ClevertechException extends RuntimeException {
 
     public ClevertechException() {

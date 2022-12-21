@@ -12,6 +12,12 @@ import by.clevertech.data.repository.ProductRepository;
 import by.clevertech.service.CheckService;
 import by.clevertech.service.impl.CheckServiceImpl;
 
+/**
+ * Factory for providing service class implementation
+ * 
+ * @author Nikita Semeniuk
+ *
+ */
 public class ServiceFactory {
 
     public static final ServiceFactory INSTANCE = new ServiceFactory();
@@ -26,6 +32,14 @@ public class ServiceFactory {
                 new CheckServiceImpl(factory.getDao(ProductRepository.class), factory.getDao(CardRepository.class)));
     }
 
+    /**
+     * provides a service class
+     * 
+     * @param <T>   return type
+     * @param clazz key
+     * @return service implementation
+     */
+    @SuppressWarnings("unchecked")
     public <T> T getService(Class<T> clazz) {
         return (T) map.get(clazz);
     }

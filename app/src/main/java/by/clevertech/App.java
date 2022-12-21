@@ -7,11 +7,11 @@ import by.clevertech.controller.Controller;
 import by.clevertech.service.dto.CheckOutDto;
 
 /**
- * The App class is a class that contains the main method and implements a
- * simple application that receives a set of parameters (product IDs and a
- * discount card ID) as command line arguments or as a file and, based on these
- * data, returns the generated {@link CheckOutDto} to the standard output stream
- * or as txt file. The directory where the txt file will be placed is specified
+ * The App class is a class that contains a main method and implements a simple
+ * application that receives a set of parameters (product IDs and a discount
+ * card ID) as command line arguments or as a file path and, based on these
+ * data, returns the generated {@link CheckOutDto} in standard output stream or
+ * as a text file. The directory where the txt file will be placed is specified
  * in the properties file.
  * 
  * @author Nikita Semeniuk

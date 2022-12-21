@@ -9,6 +9,7 @@ package by.clevertech.service.exception;
  * @author Nikita Semeniuk
  *
  */
+@SuppressWarnings("serial")
 public class ClientException extends ClevertechException {
 
     public ClientException() {

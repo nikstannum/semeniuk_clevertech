@@ -32,6 +32,11 @@ public class DataSource implements AutoCloseable {
         init();
     }
 
+    /**
+     * grants an idle connection from the connection pool
+     * 
+     * @return {@link ProxyConnection}
+     */
     public ProxyConnection getFreeConnections() {
         ProxyConnection connection = null;
         try {
@@ -44,6 +49,11 @@ public class DataSource implements AutoCloseable {
         return connection;
     }
 
+    /**
+     * Fills the connection pool.
+     * <p>
+     * The pool size is defined in the properties file
+     */
     private void init() {
         ConfigManager props = ConfigManager.INSTANCE;
         try {
@@ -62,11 +72,19 @@ public class DataSource implements AutoCloseable {
         }
     }
 
+    /**
+     * returns the connection to the pool
+     * 
+     * @param connection the used connection
+     */
     public void releaseConnection(ProxyConnection connection) {
         givenAwayConnections.remove(connection);
         freeConnections.offer(connection);
     }
 
+    /**
+     * destroys the pool
+     */
     private void destroyPoll() {
         try {
             for (int i = 0; i < poolSize; i++) {
@@ -78,6 +96,9 @@ public class DataSource implements AutoCloseable {
         }
     }
 
+    /**
+     * closes the data source
+     */
     @Override
     public void close() throws Exception {
         destroyPoll();

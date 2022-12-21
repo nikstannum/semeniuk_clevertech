@@ -10,6 +10,12 @@ import by.clevertech.data.repository.ProductRepository;
 import by.clevertech.data.repository.impl.CardRepositoryImpl;
 import by.clevertech.data.repository.impl.ProductRepositoryImpl;
 
+/**
+ * Factory for getting repository implementation for use with database
+ * 
+ * @author Nikita Semeniuk
+ *
+ */
 public class DbDaoFactory implements AbstractFactory {
 
     public static final DbDaoFactory INSTANCE = new DbDaoFactory();
@@ -22,6 +28,10 @@ public class DbDaoFactory implements AbstractFactory {
         map.put(ProductRepository.class, new ProductRepositoryImpl(dataSource));
     }
 
+    /**
+     * provides repository implementation
+     */
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T getDao(Class<T> clazz) {
         return (T) map.get(clazz);
