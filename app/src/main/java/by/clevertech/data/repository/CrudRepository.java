@@ -42,7 +42,6 @@ public interface CrudRepository<T, K> {
      * @param entity the object itself
      * @return Optional this updated object
      */
-
     public Optional<T> update(T entity);
 
     /**
@@ -51,7 +50,6 @@ public interface CrudRepository<T, K> {
      * @param id object id
      * @return result of deletion
      */
-
     public boolean delete(K id);
 
 }

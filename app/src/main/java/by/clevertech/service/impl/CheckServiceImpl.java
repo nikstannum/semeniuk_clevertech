@@ -92,12 +92,11 @@ public class CheckServiceImpl implements CheckService {
     }
 
     /**
-     * Calculates the total cost of a receipt
+     * Calculates the full cost of a receipt
      * 
      * @param items commodity items
      * @return full cost
      */
-
     private BigDecimal getFullCost(List<CheckItem> items) {
         BigDecimal fullCost = BigDecimal.ZERO;
         for (CheckItem item : items) {
@@ -123,9 +122,8 @@ public class CheckServiceImpl implements CheckService {
      * requirement
      * 
      * @param items the list of commodity items
-     * @return çrice including discount for promotional goods
+     * @return price including discount for promotional goods
      */
-
     private BigDecimal applyProductDiscounts(List<CheckItem> items) {
         BigDecimal totalCost = BigDecimal.ZERO;
         for (CheckItem item : items) {

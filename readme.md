@@ -8,7 +8,7 @@ The idea is to provide the application with a set of parameters (product ID and,
 
 The form of passing parameters as command line arguments when starting the application:
 
-Java application 3-1 2-5 5-1 card-1
+App 3-1 2-5 5-1 card-1
 
 This means that the receipt must contain one product with id=3, five products with id=2, one product with id=5, and a discount for a discount card with id=1 must also be applied.
 
@@ -22,8 +22,9 @@ In order to use a database as a data store, you must specify the value true for 
 
 Java 17, Java JDBC API, Gradle 7.5 build tool, PostgreSQL database, Lombok plugin, log4j2
 
+## Used design patterns:
+singleton, factory method, abstract factory, proxy
+
 ## Startup instructions:
 
-1) specify the necessary settings in the properties file (directory for the received file, use of the database, etc.)
-2) when using an IDE: specify the command line arguments in the configuration and run the application's main() method (App.class); when using the command line interface, compile the application and run it by specifying the necessary arguments after the class file name (App)
-3) depending on the arguments passed (just a set of arguments or a path to a file with source data), the result of the application will be output to the standard output stream or to a file, respectively
+1) when using an IDE: specify the command line arguments in the configuration and run the application's main() method (App.class); when using the command line interface, compile the application and run it by specifying the necessary arguments after the class file name (App) 2) depending on the arguments passed (just a set of arguments or a path to a file with source data), the result of the application will be output to the standard output stream or to a file, respectively
