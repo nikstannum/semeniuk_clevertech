@@ -26,7 +26,7 @@ public enum ExcHandler {
         } else if (e instanceof ClevertechException) {
             log.error(e);
             System.err.println(e);
-            System.err.println(MSG_CLIENT_ERROR + " " + e.getMessage());
+            System.err.println(MSG_APP_ERROR + " " + e.getMessage());
         } else {
             log.error(e);
             System.err.println(e);
